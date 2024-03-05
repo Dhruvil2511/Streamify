@@ -6,6 +6,7 @@ import Home from "../screens/Home";
 import MovieScreen from "../screens/MovieScreen";
 import TabNavigation from "./TabNavigation";
 import Search from "../screens/Search";
+import Player from "../screens/Player";
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,11 @@ const AppNavigation = () => {
           name="Movie"
           options={{ headerShown: false }}
           component={MovieScreen}
+        />
+        <Stack.Screen
+          name="Player"
+          options={{ orientation: "landscape" , headerShown:false }}
+          component={Player}
         />
         <Stack.Screen
           name="Search"
