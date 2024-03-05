@@ -13,6 +13,7 @@ import MovieCard from "./MovieCard";
 import { useNavigation } from "@react-navigation/native";
 import { original } from "../api/movieDb";
 import { HeartIcon } from "react-native-heroicons/solid";
+import { LinearGradient } from "expo-linear-gradient";
 
 const { width, height } = Dimensions.get("window");
 const TrendingMovies = ({ data }) => {
@@ -61,14 +62,24 @@ const TrendingMovies = ({ data }) => {
           </Text>
         </View>
         <View className="flex-1 justify-center items-center">
-          <Pressable
-            className="p-3 rounded-xl"
-            style={{ backgroundColor: "blue", width: "100%" }}
-            onPress={() => navigation.navigate("Player", currentItem.id)}
+          <LinearGradient
+            colors={["rgba(229,64,107,1)", "rgba(19,108,170,1)"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            className="rounded-xl"
           >
-            <Text className="text-white text-center text-lg">Watch Now</Text>
-          </Pressable>
+            <Pressable
+              className="p-3"
+              style={{
+                width: "100%",
+              }}
+              onPress={() => navigation.navigate("Player", currentItem.id)}
+            >
+              <Text className="text-white text-center text-lg">Watch Now</Text>
+            </Pressable>
+          </LinearGradient>
         </View>
+
         <View className="flex-1 justify-center items-center">
           <TouchableOpacity onPress={() => setIsFavourite(!isFavourite)}>
             <HeartIcon size="45" color={isFavourite ? "red" : "white"} />
