@@ -10,11 +10,13 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ChevronLeftIcon } from "react-native-heroicons/solid";
+import { useNavigation } from "@react-navigation/native";
 const { width, height } = Dimensions.get("screen");
 
 const ios = Platform.OS === "ios";
 const topMargin = ios ? "" : "mt-3";
 const Player = () => {
+  const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
   const { params: id } = useRoute();
   useEffect(() => {

@@ -71,7 +71,7 @@ const Home = () => {
           <View className="flex-row justify-start items-center">
             <View>
               <Image
-                source={require("../assets/icon.png")}
+                source={require("../assets/logo_2.png")}
                 style={{ width: 50, height: 50 }}
               />
             </View>

@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import Carousel from "react-native-snap-carousel";
 import MovieCard from "./MovieCard";
 import { useNavigation } from "@react-navigation/native";
-import { image500 } from "../api/movieDb";
+import { original } from "../api/movieDb";
 import { HeartIcon } from "react-native-heroicons/solid";
 
 const { width, height } = Dimensions.get("window");

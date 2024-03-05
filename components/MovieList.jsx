@@ -36,7 +36,7 @@ const MovieList = ({ title, data, hideSeeAll }) => {
                   source={{
                     uri: item?.poster_path
                       ? image185(item.poster_path)
-                      :fallbackposter,
+                      : fallbackposter,
                   }}
                   className="rounded-xl"
                   style={{ width: width * 0.33, height: height * 0.22 }}

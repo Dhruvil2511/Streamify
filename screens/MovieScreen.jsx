@@ -14,14 +14,16 @@ import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Cast from "../components/Cast";
 import MovieList from "../components/MovieList";
+import Svg, { Path, Polygon, Circle } from "react-native-svg";
 import {
   fallbackposter,
   fetchMovieCredits,
   fetchMovieDetails,
   fetchSimilarMovies,
   image185,
-  image500,
+  original,
 } from "../api/movieDb";
+import WebView from "react-native-webview";
 
 const ios = Platform.OS === "ios";
 const topMargin = ios ? "" : "mt-3";
@@ -58,7 +60,7 @@ const MovieScreen = () => {
     >
       <View className="w-full">
         <SafeAreaView
-          className={`absolute z-20 w-full flex-row justify-between px-5 py-5 ${topMargin}`}
+          className={`absolute z-50 w-full flex-row justify-between px-5 py-5 ${topMargin}`}
         >
           <TouchableOpacity
             className="rounded-xl p-1 bg-blue-600"
@@ -66,18 +68,69 @@ const MovieScreen = () => {
           >
             <ChevronLeftIcon size={28} strokeWidth={2.5} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setIsFavourite(!isFavourite)}>
-            <HeartIcon size="35" color={isFavourite ? "red" : "white"} />
+          <TouchableOpacity>
+            <Svg
+              fill="white"
+              width="35px"
+              height="35px"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <Path
+                fillRule="evenodd"
+                d="M1,21 L1,19 C2.1045695,19 3,19.8954305 3,21 L1,21 Z M7,21 L5,21 C5,18.790861 3.209139,17 1,17 L1,15 C4.3137085,15 7,17.6862915 7,21 Z M11,21 L9,21 C9,16.581722 5.418278,13 1,13 L1,11 C6.5228475,11 11,15.4771525 11,21 Z M3,9 L1,9 L1,5 C1,3.8954305 1.8954305,3 3,3 L21,3 C22.1045695,3 23,3.8954305 23,5 L23,19 C23,20.1045695 22.1045695,21 21,21 L13,21 L13,19 L21,19 L21,5 L3,5 L3,9 Z"
+              />
+            </Svg>
           </TouchableOpacity>
         </SafeAreaView>
       </View>
 
       <View>
+        <TouchableOpacity
+          onPress={() => navigation.push("Player", movieDetails.id)}
+          className="absolute z-20 top-0 left-0 w-full h-full flex justify-center items-center"
+        >
+          <Svg
+            fill="#ffffff"
+            width="100px"
+            height="100px"
+            viewBox="0 0 24 24"
+            id="play"
+            data-name="Line Color"
+            xmlns="http://www.w3.org/2000/svg"
+            className="icon line-color"
+          >
+            <Polygon
+              id="secondary"
+              points="16 12 10 16 10 8 16 12"
+              style={{
+                fill: "none",
+                stroke: "rgba(255,255,255,0.5)",
+                strokeLinecap: "round",
+                strokeLinejoin: "round",
+                strokeWidth: 2,
+              }}
+            />
+            <Circle
+              id="primary"
+              cx={12}
+              cy={12}
+              r={9}
+              style={{
+                fill: "none",
+                stroke: "rgba(255,255,255,0.5)",
+                strokeLinecap: "round",
+                strokeLinejoin: "round",
+                strokeWidth: 2,
+              }}
+            />
+          </Svg>
+        </TouchableOpacity>
         <Image
           className="rounded-xl"
           source={{
             uri: movieDetails?.backdrop_path
-              ? image500(movieDetails.backdrop_path)
+              ? original(movieDetails.backdrop_path)
               : fallbackposter,
           }}
           style={{ width, height: height * 0.55 }}
@@ -91,7 +144,7 @@ const MovieScreen = () => {
         />
       </View>
 
-      <View style={{marginTop:-100}} className="space-y-3">
+      <View style={{ marginTop: -100 }} className="space-y-3">
         <View className="mx-4 flex-row justify-around items-center">
           <Image
             source={{
@@ -112,6 +165,17 @@ const MovieScreen = () => {
                 {movieDetails?.release_date?.split("-")[0]} •{" "}
                 {movieDetails?.runtime} min
               </Text>
+            </View>
+            <View className="mt-5 w-52 flex-row justify-around items-center">
+              <TouchableOpacity onPress={() => setIsFavourite(!isFavourite)}>
+                <HeartIcon size="35" color={isFavourite ? "red" : "white"} />
+              </TouchableOpacity>
+              <View className="flex-col justify-center items-center">
+                <Text className="text-white text-md">Average Rating</Text>
+                <Text className="text-neutral-500 text-sm font-bold">
+                  {movieDetails.vote_average}
+                </Text>
+              </View>
             </View>
           </View>
         </View>

@@ -7,7 +7,7 @@ import {
   Button,
 } from "react-native";
 import React from "react";
-import { fallbackposter, image500 } from "../api/movieDb";
+import { fallbackposter, original } from "../api/movieDb";
 const { width, height } = Dimensions.get("window");
 
 const MovieCard = ({ item, handleClick }) => {
@@ -15,7 +15,7 @@ const MovieCard = ({ item, handleClick }) => {
     <View>
       <TouchableWithoutFeedback onPress={() => handleClick(item)}>
         <Image
-          source={{ uri: image500(item.poster_path) || fallbackposter }}
+          source={{ uri: original(item.poster_path) || fallbackposter }}
           style={{ width: width * 0.6, height: height * 0.4 }}
           className="rounded-xl"
         />

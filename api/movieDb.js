@@ -7,7 +7,8 @@ const topRatedMoviesEndpoint = `${apiBaseURL}/movie/top_rated?api_key=${process.
 const popularMoviesEndpoint = `${apiBaseURL}/movie/popular?api_key=${process.env.EXPO_PUBLIC_API_KEY}`;
 const nowPlayingMoviesEndpoint = `${apiBaseURL}/movie/now_playing?api_key=${process.env.EXPO_PUBLIC_API_KEY}`;
 const searchMovieEndpoint = `${apiBaseURL}/search/movie?api_key=${process.env.EXPO_PUBLIC_API_KEY}`;
-export const fallbackposter = "https://static.displate.com/460x640/displate/2022-04-15/7422bfe15b3ea7b5933dffd896e9c7f9_46003a1b7353dc7b5a02949bd074432a.avif"
+export const fallbackposter =
+  "https://static.displate.com/460x640/displate/2022-04-15/7422bfe15b3ea7b5933dffd896e9c7f9_46003a1b7353dc7b5a02949bd074432a.avif";
 const apiCall = async (endpoint, params) => {
   const options = {
     method: "GET",
@@ -23,8 +24,8 @@ const apiCall = async (endpoint, params) => {
   }
 };
 
-export const image500 = (path) =>
-  path ? `https://image.tmdb.org/t/p/w500/${path}` : null;
+export const original = (path) =>
+  path ? `https://image.tmdb.org/t/p/original/${path}` : null;
 export const image342 = (path) =>
   path ? `https://image.tmdb.org/t/p/w342/${path}` : null;
 export const image185 = (path) =>

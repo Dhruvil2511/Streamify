@@ -46,7 +46,7 @@ const Search = () => {
       <View className="flex-row justify-center w-full items-center">
         <View className="my-3 w-96  flex-row justify-between items-center border border-neutral-500 rounded-xl">
           <TouchableOpacity
-            className="rounded-xl p-3 m-1 bg-neutral-500"
+            className="rounded-xl p-3 m-1 bg-blue-500"
             onPress={() => navigation.navigate("Home")}
           >
             <ChevronLeftIcon
