@@ -1,18 +1,17 @@
-import {
-  Image,
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Platform,
-  Dimensions,
-} from "react-native";
 import React, { useEffect, useState } from "react";
-import { useRoute } from "@react-navigation/native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  Dimensions,
+  Image,
+  Platform,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { ChevronLeftIcon, HeartIcon } from "react-native-heroicons/solid";
-import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Cast from "../components/Cast";
 import MovieList from "../components/MovieList";
 import {
@@ -30,28 +29,26 @@ const { width, height } = Dimensions.get("window");
 
 const MovieScreen = () => {
   const navigation = useNavigation();
-  const [isFavourite, setIsFavourite] = useState(false);
-  const [cast, setCast] = useState();
   const { params: item } = useRoute();
+  const [isFavourite, setIsFavourite] = useState(false);
+  const [cast, setCast] = useState([]);
   const [movieDetails, setMovieDetails] = useState({});
   const [similarMovies, setSimilarMovies] = useState([]);
 
-  async function getMovieDetails(id) {
-    const data = await fetchMovieDetails(id);
-    if (data) setMovieDetails(data);
-  }
-  async function getMovieCredtis(id) {
-    const data = await fetchMovieCredits(id);
-    if (data && data.cast) setCast(data.cast);
-  }
-  async function getSimilarMovies(id) {
-    const data = await fetchSimilarMovies(id);
-    if (data && data.results) setSimilarMovies(data.results);
-  }
   useEffect(() => {
-    getMovieDetails(item.id);
-    getMovieCredtis(item.id);
-    getSimilarMovies(item.id);
+    const fetchData = async () => {
+      const movieDetailsData = await fetchMovieDetails(item.id);
+      if (movieDetailsData) setMovieDetails(movieDetailsData);
+
+      const movieCreditsData = await fetchMovieCredits(item.id);
+      if (movieCreditsData && movieCreditsData.cast)
+        setCast(movieCreditsData.cast);
+
+      const similarMoviesData = await fetchSimilarMovies(item.id);
+      if (similarMoviesData && similarMoviesData.results)
+        setSimilarMovies(similarMoviesData.results);
+    };
+    fetchData();
   }, [item]);
 
   return (
@@ -60,9 +57,11 @@ const MovieScreen = () => {
       className="flex-1 bg-neutral-900"
     >
       <View className="w-full">
-        <SafeAreaView className="absolute z-20 w-full flex-row justify-between px-5 py-5">
+        <SafeAreaView
+          className={`absolute z-20 w-full flex-row justify-between px-5 py-5 ${topMargin}`}
+        >
           <TouchableOpacity
-            className="rounded-xl p-1 bg-blue-600 "
+            className="rounded-xl p-1 bg-blue-600"
             onPress={() => navigation.goBack()}
           >
             <ChevronLeftIcon size={28} strokeWidth={2.5} color="white" />
@@ -92,38 +91,38 @@ const MovieScreen = () => {
         />
       </View>
 
-      <View className="space-y-3">
-        {movieDetails?.id ? (
-          <>
-            <View className="mx-5 flex-1 flex-row justify-center items-center">
-              <Image
-                source={{
-                  uri: image185(movieDetails.poster_path) || fallbackposter,
-                }}
-                className="rounded-xl"
-                style={{ width: width * 0.33, height: height * 0.22 }}
-              />
-              <View className="flex-1 flex-col justify-center items-center">
-                <Text className="text-white text-center text-3xl font-bold tracking-wider">
-                  {movieDetails?.title}
-                </Text>
-                <Text className="text-neutral-400 font-semibold text-base text-center">
-                  {movieDetails?.status} •{" "}
-                  {movieDetails?.release_date?.split("-")[0]} •{" "}
-                  {movieDetails?.runtime} min
-                </Text>
-              </View>
+      <View style={{marginTop:-100}} className="space-y-3">
+        <View className="mx-4 flex-row justify-around items-center">
+          <Image
+            source={{
+              uri: image185(movieDetails.poster_path) || fallbackposter,
+            }}
+            className="rounded-xl"
+            style={{ width: width * 0.33, height: height * 0.22 }}
+          />
+          <View className="flex-col justify-center items-center">
+            <View className="flex-row">
+              <Text className="text-white text-center text-3xl font-bold flex-1 flex-wrap">
+                {movieDetails.title}
+              </Text>
             </View>
-          </>
-        ) : null}
+            <View>
+              <Text className="text-neutral-400 font-semibold text-base text-center">
+                {movieDetails.status} •{" "}
+                {movieDetails?.release_date?.split("-")[0]} •{" "}
+                {movieDetails?.runtime} min
+              </Text>
+            </View>
+          </View>
+        </View>
 
-        <View className="flex-row justify-center mx-4 space-x-2">
+        <View className="flex-row justify-center mx-4  space-x-2">
           {movieDetails.genres?.map((genre, index) => (
             <Text
               key={index}
               className="text-neutral-400 font-semibold text-base text-center"
             >
-              {genre?.name}
+              {genre?.name} {index < movieDetails.genres.length - 1 ? "•" : ""}
             </Text>
           ))}
         </View>
@@ -131,9 +130,8 @@ const MovieScreen = () => {
           {movieDetails?.overview}
         </Text>
       </View>
-
-      {cast?.length > 0 && <Cast cast={cast} />}
-      {similarMovies?.length > 0 && (
+      {cast.length > 0 && <Cast cast={cast} />}
+      {similarMovies.length > 0 && (
         <MovieList
           title="Similar Movies"
           hideSeeAll={true}
