@@ -18,11 +18,27 @@ const topMargin = ios ? "" : "mt-3";
 const Player = () => {
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
-  const { params: id } = useRoute();
+  const {
+    params: { id, episode, season },
+  } = useRoute();
+
+  const [embedString, setEmbedString] = useState("https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1");
   useEffect(() => {
-    console.log(id);
-    if (id) setIsLoading(false);
+    console.log(id, season, episode);
+    if (id)
+      setEmbedString(
+        `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1`
+      );
+    if (episode && season) {
+      setEmbedString(
+        `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${season}&e=${episode}`
+      );
+    }
+    setIsLoading(false);
   }, [id]);
+  useEffect(() => {
+    console.log(embedString);
+  }, [embedString]);
 
   return isLoading ? (
     <ActivityIndicator />
@@ -50,8 +66,8 @@ const Player = () => {
         <html>
         <head></head> 
         <body>
-        <iframe src="https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1"
-        title="Player" allowfullscreen width="100%" height=${height + 50}>
+        <iframe src=${embedString}
+        title="Player" allowfullscreen width="100%" height=${height*1.1}>
         </iframe>
         </body>
         </html>

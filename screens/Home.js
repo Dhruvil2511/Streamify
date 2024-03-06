@@ -9,37 +9,51 @@ import {
   fetchLatestMovies,
   fetchNowPlayingMovies,
   fetchPopularMovies,
+  fetchPopularSeries,
   fetchTopRatedMovies,
+  fetchTopRatedSeries,
   fetchTrendingMovies,
+  fetchTrendingSeries,
   fetchUpcomingMovies,
 } from "../api/movieDb";
 import TopBar from "../components/TopBar";
 import * as Progress from "react-native-progress";
 
 const shuffle = (array) => {
-  for (let i = array.length - 1; i > 0; i--) {
+  for (let i = array?.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
 };
 const Home = () => {
-  const [trendingMovies, setTrendingMovies] = useState([]);
-  const [upcomingMovies, setUpcomingMovies] = useState([]);
+  const [trending, setTrending] = useState([]);
   const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
   const [popularMovies, setPopularMovies] = useState([]);
   const [topRatedMovies, setTopRatedMovies] = useState([]);
+  const [topRatedSeries, setTopRatedSeries] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
 
   async function getTrendingMovies() {
-    const data = await fetchTrendingMovies();
-    if (data && data.results) setTrendingMovies(shuffle(data.results));
+    const moviesData = await fetchTrendingMovies();
+    if (moviesData && moviesData.results) {
+      setTrending(prevTrending => {
+        return [...prevTrending, ...moviesData.results];
+      });
+    }
   }
-  async function getUpcomingMovies() {
-    const data = await fetchUpcomingMovies();
-    if (data && data.results) setUpcomingMovies(data.results);
+  
+  async function getTrendingSeries() {
+    const seriesData = await fetchTrendingSeries();
+    if (seriesData && seriesData.results) {
+      setTrending(prevTrending => {
+        return [...prevTrending, ...seriesData.results];
+      });
+    }
   }
+  
+
   async function getTopRatedMovies() {
     const data = await fetchTopRatedMovies();
     if (data && data.results) setTopRatedMovies(data.results);
@@ -52,13 +66,20 @@ const Home = () => {
     const data = await fetchNowPlayingMovies();
     if (data && data.results) setNowPlayingMovies(shuffle(data.results));
   }
+  async function getTopRatedSeries() {
+    const data = await fetchTopRatedSeries();
+    if (data && data.results) setTopRatedSeries(data.results);
+  }
+ 
   useEffect(() => {
     setIsLoading(true);
     getTrendingMovies();
-    getUpcomingMovies();
+    getTrendingSeries();
     getTopRatedMovies();
+    getTopRatedSeries();
     getPopularMovies();
     getNowPlayingMovies();
+    shuffle(trending);
     setIsLoading(false);
   }, []);
 
@@ -83,11 +104,11 @@ const Home = () => {
           </View>
         ) : (
           <>
-            <TrendingMovies data={trendingMovies} />
-            <MovieList title="Upcoming Movies" data={upcomingMovies} />
+            <TrendingMovies data={trending} />
             <MovieList title="Top Rated Movies" data={topRatedMovies} />
-            <MovieList title="Now Playing Movies" data={nowPlayingMovies} />
+            <MovieList title="Top Rated Series" data={topRatedSeries} />
             <MovieList title="Popular Movies" data={popularMovies} />
+            <MovieList title="Now Playing Movies" data={nowPlayingMovies} />
           </>
         )}
       </ScrollView>

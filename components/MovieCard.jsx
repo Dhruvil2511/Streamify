@@ -22,12 +22,16 @@ const MovieCard = ({ item, handleClick }) => {
       </TouchableWithoutFeedback>
       <View className="mt-5">
         <Text className="text-center text-white font-bold text-2xl">
-          {item.title.length > 30
-            ? item.title.slice(0, 30) + "..."
+          {item.media_type === "tv"
+            ? item.name?.length > 30
+              ? item.name?.slice(0, 30) + "..."
+              : item.name
+            : item.title?.length > 30
+            ? item.title?.slice(0, 30) + "..."
             : item.title}
         </Text>
         <Text className="my-2 text-center text-neutral-500 font-semibold text-md">
-          {item.media_type} • {item.release_date}
+          {item?.media_type?.toUpperCase()} • {item.media_type==="tv"?item?.first_air_date:item?.release_date}
         </Text>
       </View>
     </View>

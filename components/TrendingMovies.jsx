@@ -26,7 +26,8 @@ const TrendingMovies = ({ data }) => {
   }, []);
 
   function handleClick(item) {
-    navigation.navigate("Movie", item);
+    if (item.media_type === "tv") navigation.navigate("TvSeriesScreen", item);
+    else navigation.navigate("MovieScreen", item);
   }
   function handleRenderItem({ item }) {
     return <MovieCard item={item} handleClick={handleClick} />;
@@ -35,12 +36,11 @@ const TrendingMovies = ({ data }) => {
     <View className="mb-5">
       <Text className="text-white text-xl font-bold mx-5 my-5">Trending</Text>
       <Carousel
-        loop
         autoplay
         autoplayInterval={8000}
         data={data}
         renderItem={handleRenderItem}
-        firstItem={0}
+        firstItem={8}
         inactiveSlideOpacity={0.6}
         sliderWidth={width}
         itemWidth={width * 0.65}
@@ -75,7 +75,11 @@ const TrendingMovies = ({ data }) => {
               style={{
                 width: "100%",
               }}
-              onPress={() => navigation.navigate("Player", currentItem.id)}
+              onPress={() => {
+                if (currentItem.media_type === "tv")
+                  navigation.navigate("TvSeriesScreen", currentItem);
+                else navigation.navigate("Player", currentItem.id);
+              }}
             >
               <Text className="text-white text-center text-lg">Watch Now</Text>
             </Pressable>

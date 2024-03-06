@@ -19,11 +19,13 @@ const MovieList = ({ title, data, hideSeeAll }) => {
         <Text className="text-white text-xl">{title}</Text>
         <TouchableOpacity
           className="text-white"
-          onPress={() =>
-            title === "Upcoming Movies"
-              ? navigation.navigate("ViewAll", title)
-              : navigation.navigate("Movies", title)
-          }
+          onPress={() => {
+            if (title === "Upcoming Movies")
+              navigation.navigate("Upcoming", title);
+            else if (title === "Top Rated Series")
+              navigation.navigate("TvSeries", title);
+            else navigation.navigate("Movies", title);
+          }}
         >
           {!hideSeeAll ? (
             <Text className="text-md" style={{ color: "rgba(229,64,107,0.9)" }}>
@@ -39,7 +41,11 @@ const MovieList = ({ title, data, hideSeeAll }) => {
               <TouchableOpacity
                 className="pr-4"
                 key={index}
-                onPress={() => navigation.push("Movie", item)}
+                onPress={() =>
+                  title.includes("Movies")
+                    ? navigation.navigate("MovieScreen", item)
+                    : navigation.navigate("TvSeriesScreen", item)
+                }
               >
                 <Image
                   source={{
@@ -51,9 +57,9 @@ const MovieList = ({ title, data, hideSeeAll }) => {
                   style={{ width: width * 0.33, height: height * 0.22 }}
                 />
                 <Text className="text-white my-2 text-center">
-                  {item.title.length > 14
+                  {item?.title?.length > 14
                     ? item.title.slice(0, 14) + "..."
-                    : item.title}
+                    : item?.title}
                 </Text>
               </TouchableOpacity>
             );

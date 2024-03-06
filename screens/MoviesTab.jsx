@@ -57,6 +57,7 @@ const MoviesTab = () => {
   const getLatestMovies = async (page) => {
     setIsLoading(true);
     const data = await fetchNowPlayingMovies({ page: page });
+  
     if (page === 1) setResults([]);
     if (data && data.results) {
       setResults((prevResults) => [...prevResults, ...data.results]);
@@ -160,7 +161,7 @@ const MoviesTab = () => {
               return (
                 <TouchableOpacity
                   key={index}
-                  onPress={() => navigation.navigate("Movie", item)}
+                  onPress={() => navigation.navigate("MovieScreen", item)}
                   className="my-3"
                 >
                   <Image

@@ -20,7 +20,8 @@ const TabNavigation = () => {
             iconName = focused ? "play-circle" : "play-circle-outline";
           } else if (route.name === "TvSeries")
             iconName = focused ? "tv" : "tv-outline";
-          else if(route.name ==="Liked") iconName = focused?"heart":"heart-outline"
+          else if (route.name === "Liked")
+            iconName = focused ? "heart" : "heart-outline";
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },

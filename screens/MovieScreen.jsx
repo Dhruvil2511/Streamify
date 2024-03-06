@@ -86,7 +86,7 @@ const MovieScreen = () => {
 
       <View>
         <TouchableOpacity
-          onPress={() => navigation.push("Player", movieDetails.id)}
+          onPress={() => navigation.push("Player", {id:movieDetails.id})}
           className="absolute z-20 top-0 left-0 w-full h-full flex justify-center items-center"
         >
           <Svg

@@ -7,7 +7,8 @@ import MovieScreen from "../screens/MovieScreen";
 import TabNavigation from "./TabNavigation";
 import Search from "../screens/Search";
 import Player from "../screens/Player";
-import ViewAllScreen from "../screens/ViewAllScreen";
+import UpcomingScreen from "../screens/UpcomingScreen";
+import TvSeriesScreen from "../screens/TvSeriesScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -22,9 +23,14 @@ const AppNavigation = () => {
         />
 
         <Stack.Screen
-          name="Movie"
+          name="MovieScreen"
           options={{ headerShown: false }}
           component={MovieScreen}
+        />
+         <Stack.Screen
+          name="TvSeriesScreen"
+          options={{ headerShown: false }}
+          component={TvSeriesScreen}
         />
         <Stack.Screen
           name="Player"
@@ -32,9 +38,9 @@ const AppNavigation = () => {
           component={Player}
         />
         <Stack.Screen
-          name="ViewAll"
+          name="Upcoming"
           options={{ headerShown: false }}
-          component={ViewAllScreen}
+          component={UpcomingScreen}
         />
         <Stack.Screen
           name="Search"

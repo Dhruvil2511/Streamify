@@ -7,7 +7,7 @@ import {
   ScrollView,
   Image,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   ChevronLeftIcon,
@@ -18,29 +18,53 @@ import { FilmIcon } from "react-native-heroicons/outline";
 import { useNavigation } from "@react-navigation/native";
 import {
   fallbackposter,
-  fetchSearchedMovie,
+  fetchSearch,
   image185,
   image342,
 } from "../api/movieDb";
+import * as Progress from "react-native-progress";
 const { width, height } = Dimensions.get("window");
 const Search = () => {
   const [results, setResults] = useState([]);
   const [searchQ, setSearchQ] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
   async function handleSearchQuery() {
     if (searchQ.trim() === "") return;
+    setIsLoading(true);
 
     const params = {
       query: searchQ,
       include_adult: true,
       language: "en-US",
-      page: 1,
+      page: currentPage,
     };
-    fetchSearchedMovie(params)
-      .then((data) => (data && data.results ? setResults(data.results) : []))
-      .catch((err) => console.error(err));
+    fetchSearch(params)
+      .then((data) =>
+        data && data.results
+          ? setResults((prevResults) => [...prevResults, ...data.results])
+          : []
+      )
+      .catch((err) => console.error(err))
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
+  useEffect(() => {
+    handleSearchQuery();
+  }, [currentPage]);
+  const handleScroll = ({ nativeEvent }) => {
+    const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
+    const paddingToBottom = 20;
+    if (
+      layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - paddingToBottom
+    ) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
   return (
     <SafeAreaView className="bg-neutral-900 flex-1">
       <View className="flex-row justify-center w-full items-center">
@@ -69,36 +93,76 @@ const Search = () => {
           </TouchableOpacity>
         </View>
       </View>
-      {results.length > 0 ? (
-        <ScrollView showsVerticalScrollIndicator={false} className="space-y-2">
+      {isLoading ? (
+        <View className="w-full">
+          <Progress.Bar
+            indeterminate={true}
+            indeterminateAnimationDuration={500}
+            width={null}
+            borderRadius={0}
+            height={2}
+            borderWidth={0}
+            color="rgba(229,64,107,1)"
+          />
+        </View>
+      ) : null}
+      {results?.length > 0 ? (
+        <ScrollView
+          onScroll={handleScroll}
+          showsVerticalScrollIndicator={false}
+          className="space-y-2"
+        >
           <Text className="text-white font-semibold m-1 mx-5">
-            Results ({results.length})
+            Results ({results?.length})
           </Text>
 
           <View className="flex-row flex-wrap justify-between  mx-5 my-5">
-            {results.map((item, index) => {
+            {results?.map((item, index) => {
               return (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => navigation.navigate("Movie", item)}
-                >
-                  <Image
-                    source={{
-                      uri: image185(item?.poster_path) || fallbackposter,
-                    }}
-                    style={{ width: width * 0.29, height: height * 0.22 }}
-                  />
-                  <View className="flex-row my-2">
-                    <Text
-                      className="flex-1 flex-wrap text-center text-neutral-300 mb-1"
-                      numberOfLines={2}
+                <>
+                  <View
+                    key={index}
+                    className="w-full flex-row my-2 justify-start items-center"
+                  >
+                    <TouchableOpacity
+                      onPress={() => {
+                        item.media_type === "tv"
+                          ? navigation.navigate("TvSeriesScreen", item)
+                          : navigation.navigate("MovieScreen", item);
+                      }}
                     >
-                      {item.title.length > 30
-                        ? item.title.slice(0, 30) + "..."
-                        : item.title}
-                    </Text>
+                      <Image
+                        source={{
+                          uri: image185(item?.poster_path) || fallbackposter,
+                        }}
+                        style={{ width: width * 0.29, height: height * 0.18 }}
+                      />
+                    </TouchableOpacity>
+                    <View className="ml-5 py-2 w-full my-2 flex-col justify-start items-start">
+                      <View className="flex-row w-60">
+                        <Text
+                          className="text-white w-72 font-semibold  text-xl flex-1 flex-wrap"
+                          numberOfLines={2}
+                        >
+                          {item.media_type === "tv"
+                            ? item?.name?.length > 30
+                              ? item?.name.slice(0, 30) + "..."
+                              : item?.name
+                            : item?.title?.length > 30
+                            ? item?.title.slice(0, 30) + "..."
+                            : item?.title}
+                          {}
+                        </Text>
+                      </View>
+                      <View>
+                        <Text className="text-neutral-500 font-bold text-md">
+                          {item?.media_type.toUpperCase()} • Rating :{" "}
+                          {item.vote_average}
+                        </Text>
+                      </View>
+                    </View>
                   </View>
-                </TouchableOpacity>
+                </>
               );
             })}
           </View>
