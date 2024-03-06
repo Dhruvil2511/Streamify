@@ -71,7 +71,7 @@ const Search = () => {
       </View>
       {results.length > 0 ? (
         <ScrollView showsVerticalScrollIndicator={false} className="space-y-2">
-          <Text className="text-white font-semibold m-1">
+          <Text className="text-white font-semibold m-1 mx-5">
             Results ({results.length})
           </Text>
 
@@ -86,12 +86,15 @@ const Search = () => {
                     source={{
                       uri: image185(item?.poster_path) || fallbackposter,
                     }}
-                    style={{ width: width * 0.44, height: height * 0.3 }}
+                    style={{ width: width * 0.29, height: height * 0.22 }}
                   />
-                  <View className="space-y-2 mb-4 ">
-                    <Text className="text-center text-neutral-300 mb-1">
-                      {item.title.length > 20
-                        ? item.title.slice(0, 20) + "..."
+                  <View className="flex-row my-2">
+                    <Text
+                      className="flex-1 flex-wrap text-center text-neutral-300 mb-1"
+                      numberOfLines={2}
+                    >
+                      {item.title.length > 30
+                        ? item.title.slice(0, 30) + "..."
                         : item.title}
                     </Text>
                   </View>

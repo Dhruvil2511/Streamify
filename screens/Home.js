@@ -1,11 +1,6 @@
 import { View, Text, Platform, Image, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StatusBar } from "expo-status-bar";
-import {
-  MagnifyingGlassIcon,
-  UserCircleIcon,
-} from "react-native-heroicons/solid";
 import { ScrollView } from "react-native";
 import TrendingMovies from "../components/TrendingMovies";
 import MovieList from "../components/MovieList";
@@ -18,7 +13,8 @@ import {
   fetchTrendingMovies,
   fetchUpcomingMovies,
 } from "../api/movieDb";
-const ios = Platform.OS === "ios";
+import TopBar from "../components/TopBar";
+import * as Progress from "react-native-progress";
 
 const shuffle = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -33,6 +29,7 @@ const Home = () => {
   const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
   const [popularMovies, setPopularMovies] = useState([]);
   const [topRatedMovies, setTopRatedMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
 
   async function getTrendingMovies() {
@@ -56,51 +53,43 @@ const Home = () => {
     if (data && data.results) setNowPlayingMovies(shuffle(data.results));
   }
   useEffect(() => {
+    setIsLoading(true);
     getTrendingMovies();
     getUpcomingMovies();
     getTopRatedMovies();
     getPopularMovies();
     getNowPlayingMovies();
+    setIsLoading(false);
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 bg-neutral-900">
-      <View className={ios ? "-mb-2" : "mb-3"}>
-        <StatusBar style="light" />
-        <View className="flex-row justify-between items-center w-100 mx-4">
-          <View className="flex-row justify-start items-center">
-            <View>
-              <Image
-                source={require("../assets/logo_2.png")}
-                style={{ width: 50, height: 50 }}
-              />
-            </View>
-            <View>
-              <Text className="text-white text-2xl font-bold">Streamify</Text>
-            </View>
-          </View>
-          <View className="flex-row justify-start items-center">
-            <View className="px-5">
-              <TouchableOpacity onPress={() => navigation.navigate("Search")}>
-                <MagnifyingGlassIcon size={35} strokeWidth={2} color="white" />
-              </TouchableOpacity>
-            </View>
-            <View>
-              <UserCircleIcon size={35} strokeWidth={2} color="white" />
-            </View>
-          </View>
-        </View>
-      </View>
+    <SafeAreaView className="flex-1 bg-neutral-950">
+      <TopBar />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 10 }}
       >
-        {/* Trending Movies carousel */}
-        {trendingMovies.length > 0 && <TrendingMovies data={trendingMovies} />}
-        <MovieList title="Upcoming Movies" data={upcomingMovies} />
-        <MovieList title="Top Rated Movies" data={topRatedMovies} />
-        <MovieList title="Now Playing Movies" data={nowPlayingMovies} />
-        <MovieList title="Popular Movies" data={popularMovies} />
+        {isLoading ? (
+          <View className="w-full">
+            <Progress.Bar
+              indeterminate={true}
+              indeterminateAnimationDuration={500}
+              width={null}
+              borderRadius={0}
+              height={2}
+              borderWidth={0}
+              color="rgba(229,64,107,1)"
+            />
+          </View>
+        ) : (
+          <>
+            <TrendingMovies data={trendingMovies} />
+            <MovieList title="Upcoming Movies" data={upcomingMovies} />
+            <MovieList title="Top Rated Movies" data={topRatedMovies} />
+            <MovieList title="Now Playing Movies" data={nowPlayingMovies} />
+            <MovieList title="Popular Movies" data={popularMovies} />
+          </>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

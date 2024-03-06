@@ -45,15 +45,15 @@ export const fetchUpcomingMovies = () => {
   return apiCall(upcomingMoviesEndpoint);
 };
 
-export const fetchTopRatedMovies = () => {
-  return apiCall(topRatedMoviesEndpoint);
+export const fetchTopRatedMovies = (params = {}) => {
+  return apiCall(topRatedMoviesEndpoint, params);
 };
 
-export const fetchPopularMovies = () => {
-  return apiCall(popularMoviesEndpoint);
+export const fetchPopularMovies = (params = {}) => {
+  return apiCall(popularMoviesEndpoint, params);
 };
-export const fetchNowPlayingMovies = () => {
-  return apiCall(nowPlayingMoviesEndpoint);
+export const fetchNowPlayingMovies = (params = {}) => {
+  return apiCall(nowPlayingMoviesEndpoint, params);
 };
 
 export const fetchMovieDetails = (id) => {

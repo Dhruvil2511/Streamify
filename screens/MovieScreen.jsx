@@ -23,7 +23,6 @@ import {
   image185,
   original,
 } from "../api/movieDb";
-import WebView from "react-native-webview";
 
 const ios = Platform.OS === "ios";
 const topMargin = ios ? "" : "mt-3";
@@ -56,7 +55,7 @@ const MovieScreen = () => {
   return (
     <ScrollView
       contentContainerStyle={{ paddingBottom: 20 }}
-      className="flex-1 bg-neutral-900"
+      className="flex-1 bg-neutral-950"
     >
       <View className="w-full">
         <SafeAreaView
@@ -136,7 +135,7 @@ const MovieScreen = () => {
           style={{ width, height: height * 0.55 }}
         />
         <LinearGradient
-          colors={["transparent", "rgba(23,23,23,0.8)", "rgba(23,23,23,1)"]}
+          colors={["transparent", "rgba(0,0,0,0.8)", "rgba(0,0,0,1)"]}
           style={{ width, height: height * 0.4 }}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}

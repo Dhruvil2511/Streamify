@@ -21,7 +21,9 @@ const TrendingMovies = ({ data }) => {
   const [isFavourite, setIsFavourite] = useState(false);
   const navigation = useNavigation();
 
-  // useEffect(() => {}, [currentItem]);
+  useEffect(() => {
+    setCurrentItem(data[0]);
+  }, []);
 
   function handleClick(item) {
     navigation.navigate("Movie", item);
@@ -38,7 +40,7 @@ const TrendingMovies = ({ data }) => {
         autoplayInterval={8000}
         data={data}
         renderItem={handleRenderItem}
-        firstItem={1}
+        firstItem={0}
         inactiveSlideOpacity={0.6}
         sliderWidth={width}
         itemWidth={width * 0.65}

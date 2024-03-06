@@ -7,6 +7,7 @@ import MovieScreen from "../screens/MovieScreen";
 import TabNavigation from "./TabNavigation";
 import Search from "../screens/Search";
 import Player from "../screens/Player";
+import ViewAllScreen from "../screens/ViewAllScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -27,8 +28,13 @@ const AppNavigation = () => {
         />
         <Stack.Screen
           name="Player"
-          options={{ orientation: "landscape" , headerShown:false }}
+          options={{ orientation: "landscape", headerShown: false }}
           component={Player}
+        />
+        <Stack.Screen
+          name="ViewAll"
+          options={{ headerShown: false }}
+          component={ViewAllScreen}
         />
         <Stack.Screen
           name="Search"
