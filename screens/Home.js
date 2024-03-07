@@ -38,21 +38,20 @@ const Home = () => {
   async function getTrendingMovies() {
     const moviesData = await fetchTrendingMovies();
     if (moviesData && moviesData.results) {
-      setTrending(prevTrending => {
+      setTrending((prevTrending) => {
         return [...prevTrending, ...moviesData.results];
       });
     }
   }
-  
+
   async function getTrendingSeries() {
     const seriesData = await fetchTrendingSeries();
     if (seriesData && seriesData.results) {
-      setTrending(prevTrending => {
+      setTrending((prevTrending) => {
         return [...prevTrending, ...seriesData.results];
       });
     }
   }
-  
 
   async function getTopRatedMovies() {
     const data = await fetchTopRatedMovies();
@@ -70,7 +69,7 @@ const Home = () => {
     const data = await fetchTopRatedSeries();
     if (data && data.results) setTopRatedSeries(data.results);
   }
- 
+
   useEffect(() => {
     setIsLoading(true);
     getTrendingMovies();
@@ -79,8 +78,10 @@ const Home = () => {
     getTopRatedSeries();
     getPopularMovies();
     getNowPlayingMovies();
-    shuffle(trending);
-    setIsLoading(false);
+    setTrending(shuffle(trending));
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
   }, []);
 
   return (

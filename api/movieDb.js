@@ -1,5 +1,20 @@
 import axios from "axios";
 
+function getDynamicDate() {
+  const currentDate = new Date();
+  // Subtract 1 month from the current date
+  currentDate.setMonth(currentDate.getMonth() - 1);
+
+  // Get the year, month, and day components
+  const year = currentDate.getFullYear();
+  const month = ("0" + (currentDate.getMonth() + 1)).slice(-2); // Months are zero-based
+  const day = ("0" + currentDate.getDate()).slice(-2);
+
+  // Construct the date string in the required format
+  const dateString = `${year}-${month}-${day}`;
+  return dateString;
+}
+
 const apiBaseURL = "https://api.themoviedb.org/3";
 const trendingMoviesEndpoint = `${apiBaseURL}/trending/movie/week?api_key=${process.env.EXPO_PUBLIC_API_KEY}`;
 const trendingSeriesEndpoint = `${apiBaseURL}/trending/tv/week?api_key=${process.env.EXPO_PUBLIC_API_KEY}`;
@@ -8,7 +23,9 @@ const topRatedMoviesEndpoint = `${apiBaseURL}/movie/top_rated?api_key=${process.
 const nowPlayingMoviesEndpoint = `${apiBaseURL}/movie/now_playing?api_key=${process.env.EXPO_PUBLIC_API_KEY}`;
 const searchEndpoint = `${apiBaseURL}/search/multi?api_key=${process.env.EXPO_PUBLIC_API_KEY}`;
 const topRatedSeriesEndpoint = `${apiBaseURL}/tv/top_rated?api_key=${process.env.EXPO_PUBLIC_API_KEY}`;
-
+const latestSeriesEndpoint = `${apiBaseURL}/discover/tv?first_air_date.lte=${getDynamicDate()}&include_null_first_air_dates=false&language=en-US&sort_by=first_air_date.desc&vote_average.gte=6&with_original_language=en&api_key=${
+  process.env.EXPO_PUBLIC_API_KEY
+}`;
 
 export const fallbackposter =
   "https://static.displate.com/460x640/displate/2022-04-15/7422bfe15b3ea7b5933dffd896e9c7f9_46003a1b7353dc7b5a02949bd074432a.avif";
@@ -55,9 +72,9 @@ export const seasonDataEndpoint = (id, seasonNumber) =>
 export const fetchTrendingMovies = () => {
   return apiCall(trendingMoviesEndpoint);
 };
-export const fetchTrendingSeries =()=>{
-  return apiCall(trendingSeriesEndpoint)
-}
+export const fetchTrendingSeries = () => {
+  return apiCall(trendingSeriesEndpoint);
+};
 export const fetchUpcomingMovies = (params = {}) => {
   return apiCall(upcomingMoviesEndpoint, params);
 };
@@ -75,6 +92,9 @@ export const fetchNowPlayingMovies = (params = {}) => {
 
 export const fetchPopularSeries = (params = {}) => {
   return apiCall(trendingSeriesEndpoint, params);
+};
+export const fetchLatestSeries = (params = {}) => {
+  return apiCall(latestSeriesEndpoint, params);
 };
 export const fetchTopRatedSeries = (params = {}) => {
   return apiCall(topRatedSeriesEndpoint, params);

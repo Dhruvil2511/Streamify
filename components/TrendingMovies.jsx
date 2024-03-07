@@ -37,7 +37,7 @@ const TrendingMovies = ({ data }) => {
       <Text className="text-white text-xl font-bold mx-5 my-5">Trending</Text>
       <Carousel
         autoplay
-        autoplayInterval={8000}
+        autoplayInterval={7000}
         data={data}
         renderItem={handleRenderItem}
         firstItem={8}

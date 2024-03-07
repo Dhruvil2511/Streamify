@@ -14,7 +14,7 @@ const { width, height } = Dimensions.get("window");
 const MovieList = ({ title, data, hideSeeAll }) => {
   const navigation = useNavigation();
   return (
-    <View className="my-5 mx-5">
+    <View className="my-2 mx-5">
       <View className="flex-row justify-between items-center ">
         <Text className="text-white text-xl">{title}</Text>
         <TouchableOpacity

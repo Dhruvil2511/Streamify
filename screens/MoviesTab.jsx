@@ -5,6 +5,7 @@ import {
   ScrollView,
   Image,
   Dimensions,
+  FlatList,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView, useSafeAreaFrame } from "react-native-safe-area-context";
@@ -28,27 +29,37 @@ const MoviesTab = () => {
   const { params: title } = useRoute();
   const [isLoading, setIsLoading] = useState(false);
   const [currentActive, setCurrentActive] = useState("Popular Movies");
-
   const getPopularMovies = async (page) => {
     setIsLoading(true);
     if (page === 1) setResults([]);
     const data = await fetchPopularMovies({ page: page });
     if (data && data.results) {
-      setResults((prevResults) => [...prevResults, ...data.results]);
+      setResults((prevResults) => {
+        const existingIds = new Set(prevResults.map((item) => item.id));
+        const filteredResults = data.results.filter(
+          (item) => !existingIds.has(item.id)
+        );
+        return [...prevResults, ...filteredResults];
+      });
     }
-
     setTimeout(() => {
       setIsLoading(false);
     }, 1000);
   };
+
   const getTopRatedMovies = async (page) => {
     setIsLoading(true);
     if (page === 1) setResults([]);
     const data = await fetchTopRatedMovies({ page: page });
     if (data && data.results) {
-      setResults((prevResults) => [...prevResults, ...data.results]);
+      setResults((prevResults) => {
+        const existingIds = new Set(prevResults.map((item) => item.id));
+        const filteredResults = data.results.filter(
+          (item) => !existingIds.has(item.id)
+        );
+        return [...prevResults, ...filteredResults];
+      });
     }
-
     setTimeout(() => {
       setIsLoading(false);
     }, 1000);
@@ -57,10 +68,16 @@ const MoviesTab = () => {
   const getLatestMovies = async (page) => {
     setIsLoading(true);
     const data = await fetchNowPlayingMovies({ page: page });
-  
+
     if (page === 1) setResults([]);
     if (data && data.results) {
-      setResults((prevResults) => [...prevResults, ...data.results]);
+      setResults((prevResults) => {
+        const existingIds = new Set(prevResults.map((item) => item.id));
+        const filteredResults = data.results.filter(
+          (item) => !existingIds.has(item.id)
+        );
+        return [...prevResults, ...filteredResults];
+      });
     }
     setTimeout(() => {
       setIsLoading(false);
@@ -151,30 +168,31 @@ const MoviesTab = () => {
         </TouchableOpacity>
       </View>
       {results.length > 0 ? (
-        <ScrollView
+        <FlatList
+          data={results}
           onScroll={handleScroll}
+          numColumns={3}
           showsVerticalScrollIndicator={false}
-          className="space-y-2"
-        >
-          <View className="flex-row flex-wrap justify-between  mx-5 my-5">
-            {results.map((item, index) => {
-              return (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => navigation.navigate("MovieScreen", item)}
-                  className="my-3"
-                >
-                  <Image
-                    source={{
-                      uri: image185(item?.poster_path) || fallbackposter,
-                    }}
-                    style={{ width: width * 0.29, height: height * 0.22 }}
-                  />
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        </ScrollView>
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item, index }) => (
+            <View
+              key={index}
+              className="flex-row items-center justify-start mx-2"
+            >
+              <TouchableOpacity
+                onPress={() => navigation.navigate("MovieScreen", item)}
+                className="my-3"
+              >
+                <Image
+                  source={{
+                    uri: image185(item?.poster_path) || fallbackposter,
+                  }}
+                  style={{ width: width * 0.29, height: height * 0.22 }}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+        />
       ) : (
         <View className="flex-1 justify-center items-center">
           <FilmIcon size="50" color="white" />

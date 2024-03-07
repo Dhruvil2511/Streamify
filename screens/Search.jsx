@@ -6,6 +6,7 @@ import {
   TextInput,
   ScrollView,
   Image,
+  FlatList,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -44,12 +45,20 @@ const Search = () => {
     fetchSearch(params)
       .then((data) =>
         data && data.results
-          ? setResults((prevResults) => [...prevResults, ...data.results])
+          ? setResults((prevResults) => {
+              const existingIds = new Set(prevResults.map((item) => item.id));
+              const filteredResults = data.results.filter(
+                (item) => !existingIds.has(item.id)
+              );
+              return [...prevResults, ...filteredResults];
+            })
           : []
       )
       .catch((err) => console.error(err))
       .finally(() => {
-        setIsLoading(false);
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 2000);
       });
   }
   useEffect(() => {
@@ -107,23 +116,23 @@ const Search = () => {
         </View>
       ) : null}
       {results?.length > 0 ? (
-        <ScrollView
-          onScroll={handleScroll}
-          showsVerticalScrollIndicator={false}
-          className="space-y-2"
-        >
+        <>
           <Text className="text-white font-semibold m-1 mx-5">
             Results ({results?.length})
           </Text>
-
-          <View className="flex-row flex-wrap justify-between  mx-5 my-5">
-            {results?.map((item, index) => {
+          <FlatList
+            data={results}
+            onScroll={handleScroll}
+            className="space-y-2"
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item, index }) => {
               return (
-                <>
-                  <View
-                    key={index}
-                    className="w-full flex-row my-2 justify-start items-center"
-                  >
+                <View
+                  key={index}
+                  className="flex-row flex-wrap justify-between mx-4"
+                >
+                  <View className="w-full flex-row my-2 justify-start items-center">
                     <TouchableOpacity
                       onPress={() => {
                         item.media_type === "tv"
@@ -135,7 +144,10 @@ const Search = () => {
                         source={{
                           uri: image185(item?.poster_path) || fallbackposter,
                         }}
-                        style={{ width: width * 0.29, height: height * 0.18 }}
+                        style={{
+                          width: width * 0.29,
+                          height: height * 0.18,
+                        }}
                       />
                     </TouchableOpacity>
                     <View className="ml-5 py-2 w-full my-2 flex-col justify-start items-start">
@@ -162,11 +174,11 @@ const Search = () => {
                       </View>
                     </View>
                   </View>
-                </>
+                </View>
               );
-            })}
-          </View>
-        </ScrollView>
+            }}
+          />
+        </>
       ) : (
         <View className="flex-1 justify-center items-center">
           <FilmIcon size="50" color="white" />
