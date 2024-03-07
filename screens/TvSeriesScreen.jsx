@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
+  FlatList,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import {
@@ -49,7 +50,7 @@ const TvSeriesScreen = () => {
   const [seasonsList, setSeasonsList] = useState([]);
   const [selectedSeason, setSelectedSeason] = useState(1);
   const [episodes, setEpisodes] = useState([]);
-  const [episodesLoading, setEpisodesLoading] = useState(true);
+  const [episodesLoading, setEpisodesLoading] = useState(false);
 
   const fetchData = async () => {
     const seriesDetailsData = await fetchSeriesDetails(item.id);
@@ -78,24 +79,105 @@ const TvSeriesScreen = () => {
   };
 
   const getSeasonData = async () => {
+    setEpisodesLoading(true);
     const seasonDetailsData = await fetchSeasonData(item.id, selectedSeason);
     if (seasonDetailsData) {
       setEpisodes(seasonDetailsData.episodes);
     }
+    setEpisodesLoading(false);
   };
   useEffect(() => {
     fetchData();
   }, []);
 
   useEffect(() => {
-    setEpisodesLoading(true);
     getSeasonData();
-    setEpisodesLoading(false);
   }, [selectedSeason]);
 
+  const renderEpisodes = ({ item: episode }) => {
+    return (
+      <View className="my-2 flex-row justify-start items-start">
+        <View className="flex-1 justify-start items-start">
+          <TouchableOpacity
+            onPress={() =>
+              navigation.push("Player", {
+                id: item.id,
+                episode: episode.episode_number,
+                season: episode.season_number,
+              })
+            }
+            className="absolute z-20 top-0 left-0 w-full h-48 flex justify-center items-center"
+          >
+            <Svg
+              fill="#ffffff"
+              width="50px"
+              height="50px"
+              viewBox="0 0 24 24"
+              id="play"
+              data-name="Line Color"
+              xmlns="http://www.w3.org/2000/svg"
+              className="icon line-color"
+            >
+              <Polygon
+                id="secondary"
+                points="16 12 10 16 10 8 16 12"
+                style={{
+                  fill: "none",
+                  stroke: "rgba(255,255,255,0.8)",
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeWidth: 2,
+                }}
+              />
+              <Circle
+                id="primary"
+                cx={12}
+                cy={12}
+                r={9}
+                style={{
+                  fill: "none",
+                  stroke: "rgba(255,255,255,0.8)",
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeWidth: 2,
+                }}
+              />
+            </Svg>
+          </TouchableOpacity>
+          <View className="flex-1  justify-start items-start mx-3 ">
+            <Image
+              className="rounded-xl"
+              source={{ uri: image342(episode.still_path) }}
+              style={{ width: width * 0.8, height: 200 }}
+            />
+            <View className="flex-row mt-3 justify-start items-start">
+              <View className="flex-row justify-center items-center">
+                <Text className="text-neutral-500 text-lg">
+                  {episode?.episode_number} •
+                </Text>
+                <Text
+                  className="ml-1 text-lg text-white text-left font-bold "
+                  numberOfLines={2}
+                >
+                  {episode?.name.length > 30
+                    ? episode.name.slice(0, 30) + "..."
+                    : episode.name}
+                </Text>
+              </View>
+            </View>
+            <View className="flex-1 mt-2  w-full justify-start items-start">
+              <Text className="text-neutral-600 ">{episode?.air_date}</Text>
+              <Text className="text-neutral-600 ">
+                Rating: {episode?.vote_average}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+  };
   return (
     <ScrollView
-      nestedScrollEnabled={true}
       contentContainerStyle={{ paddingBottom: 20 }}
       className="flex-1 bg-neutral-950"
     >
@@ -137,7 +219,7 @@ const TvSeriesScreen = () => {
           style={{ width, height: height * 0.55 }}
         />
         <LinearGradient
-          colors={["transparent", "rgba(0,0,0,0.8)", "rgba(0,0,0,1)"]}
+          colors={["transparent", "rgba(0,0,0,0.9)", "rgba(10,10,10,1)"]}
           style={{ width, height: height * 0.4 }}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
@@ -197,16 +279,8 @@ const TvSeriesScreen = () => {
           {seriesDetails?.overview}
         </Text>
       </View>
-      <View className="mt-8 mx-5 flex-1">
+      <View className="mt-8 mx-5 ">
         <DropDownPicker
-          style={{
-            backgroundColor: "rgb(10,10,10)",
-            borderColor: "white",
-          }}
-          containerStyle={{
-            backgroundColor: "rgb(10,10,10)",
-          }}
-          listItemContainerStyle={{ backgroundColor: "black" }}
           textStyle={{ color: "white" }}
           labelStyle={{
             fontWeight: "bold",
@@ -214,9 +288,7 @@ const TvSeriesScreen = () => {
           modalContentContainerStyle={{
             backgroundColor: "rgb(10,10,10)",
             width: "100%",
-            flex: 1,
           }}
-          modalTitleStyle={{ color: "black", backgroundColor: "black" }}
           modalAnimationType="slide"
           modalTitle="Select a season"
           open={open}
@@ -235,98 +307,29 @@ const TvSeriesScreen = () => {
       <View className="mx-5 my-2">
         <Text className="text-white text-2xl">Episodes</Text>
         {episodesLoading ? (
-          <ActivityIndicator size={20} />
+          <View className="w-full my-2 flex-1 justify-center items-center">
+            <ActivityIndicator size={50} color="white" />
+          </View>
         ) : (
-          episodes?.map((episode, index) => (
-            <View
-              key={index}
-              className="w-full my-2 flex-row justify-center items-center"
-            >
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.push("Player", {
-                    id: item.id,
-                    episode: episode.episode_number,
-                    season: episode.season_number,
-                  })
-                }
-                className="absolute z-20 top-0 left-0 w-48 h-full flex justify-center items-center"
-              >
-                <Svg
-                  fill="#ffffff"
-                  width="50px"
-                  height="50px"
-                  viewBox="0 0 24 24"
-                  id="play"
-                  data-name="Line Color"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="icon line-color"
-                >
-                  <Polygon
-                    id="secondary"
-                    points="16 12 10 16 10 8 16 12"
-                    style={{
-                      fill: "none",
-                      stroke: "rgba(255,255,255,0.5)",
-                      strokeLinecap: "round",
-                      strokeLinejoin: "round",
-                      strokeWidth: 2,
-                    }}
-                  />
-                  <Circle
-                    id="primary"
-                    cx={12}
-                    cy={12}
-                    r={9}
-                    style={{
-                      fill: "none",
-                      stroke: "rgba(255,255,255,0.5)",
-                      strokeLinecap: "round",
-                      strokeLinejoin: "round",
-                      strokeWidth: 2,
-                    }}
-                  />
-                </Svg>
-              </TouchableOpacity>
-              <View className="flex-1 w-72">
-                <Image
-                  source={{ uri: image342(episode.still_path) }}
-                  style={{ width: width * 0.5, height: 100 }}
-                />
-              </View>
-              <View className="w-28 mx-5 flex-col justify-start items-start">
-                <View className="flex-row justify-center items-center">
-                  <Text className="text-neutral-500 text-md">
-                    {episode?.episode_number} -
-                  </Text>
-                  <View className="flex-row">
-                    <Text
-                      className="ml-1 text-sm text-white text-left font-bold "
-                      numberOfLines={2}
-                    >
-                      {episode?.name.length > 30
-                        ? episode.name.slice(0, 30) + "..."
-                        : episode.name}
-                    </Text>
-                  </View>
-                </View>
-                <Text className="text-neutral-600 ">{episode?.air_date}</Text>
-                <Text className="text-neutral-600 ">
-                  Rating: {episode?.vote_average}
-                </Text>
-              </View>
-            </View>
-          ))
+          <FlatList
+            horizontal
+            data={episodes}
+            renderItem={renderEpisodes}
+            keyExtractor={(_, index) => index.toString()}
+            removeClippedSubviews={true}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
+
+        {cast.length > 0 && <Cast cast={cast} />}
+        {similarSeries.length > 0 && (
+          <MovieList
+            title="Similar Series"
+            hideSeeAll={true}
+            data={similarSeries}
+          />
         )}
       </View>
-      {cast.length > 0 && <Cast cast={cast} />}
-      {similarSeries.length > 0 && (
-        <MovieList
-          title="Similar Series"
-          hideSeeAll={true}
-          data={similarSeries}
-        />
-      )}
     </ScrollView>
   );
 };

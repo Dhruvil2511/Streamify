@@ -3,13 +3,13 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  Image,
   FlatList,
 } from "react-native";
 import React from "react";
+import { Image } from "expo-image";
 import { fallbackposter, image185 } from "../api/movieDb";
 
-const Cast = ({ cast }) => {
+const Cast = React.memo(({ cast }) => {
   return (
     <View className="my-5 mx-5">
       <Text className="text-white text-lg my-5">Top Cast</Text>
@@ -46,6 +46,6 @@ const Cast = ({ cast }) => {
       />
     </View>
   );
-};
+});
 
 export default Cast;

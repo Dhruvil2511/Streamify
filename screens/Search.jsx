@@ -79,7 +79,8 @@ const Search = () => {
       <View className="flex-row justify-center w-full items-center">
         <View className="my-3 w-96  flex-row justify-between items-center border border-neutral-500 rounded-xl">
           <TouchableOpacity
-            className="rounded-xl p-3 m-1 bg-blue-500"
+            className="rounded-xl p-3 m-1"
+            style={{ backgroundColor: "rgba(229,64,107,1)" }}
             onPress={() => navigation.navigate("Home")}
           >
             <ChevronLeftIcon
@@ -91,11 +92,13 @@ const Search = () => {
           <TextInput
             placeholder="Search a movie.."
             placeholderTextColor="lightgray"
+            onSubmitEditing={()=>handleSearchQuery()}
             onChangeText={(newText) => setSearchQ(newText)}
             className="px-5 py-4 flex-1 text-base font-semibold text-white tracking-wider"
           />
           <TouchableOpacity
-            className="rounded-xl p-3 m-1 bg-neutral-500"
+            className="rounded-xl p-3 m-1"
+            style={{ backgroundColor: "rgba(19,108,170,1)" }}
             onPress={() => handleSearchQuery()}
           >
             <MagnifyingGlassIcon size="25" color={"white"} />

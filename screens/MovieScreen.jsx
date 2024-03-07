@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Dimensions,
-  Image,
+  
   Platform,
   ScrollView,
   Text,
@@ -23,7 +23,7 @@ import {
   image185,
   original,
 } from "../api/movieDb";
-
+import { Image } from "react-native-elements";
 const ios = Platform.OS === "ios";
 const topMargin = ios ? "" : "mt-3";
 const { width, height } = Dimensions.get("window");
@@ -86,7 +86,7 @@ const MovieScreen = () => {
 
       <View>
         <TouchableOpacity
-          onPress={() => navigation.push("Player", {id:movieDetails.id})}
+          onPress={() => navigation.push("Player", { id: movieDetails.id })}
           className="absolute z-20 top-0 left-0 w-full h-full flex justify-center items-center"
         >
           <Svg
@@ -135,7 +135,7 @@ const MovieScreen = () => {
           style={{ width, height: height * 0.55 }}
         />
         <LinearGradient
-          colors={["transparent", "rgba(0,0,0,0.8)", "rgba(0,0,0,1)"]}
+          colors={["transparent", "rgba(0,0,0,0.9)", "rgba(10,10,10,1)"]}
           style={{ width, height: height * 0.4 }}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
