@@ -33,6 +33,7 @@ import {
 } from "../api/movieDb";
 
 import DropDownPicker from "react-native-dropdown-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ios = Platform.OS === "ios";
 const topMargin = ios ? "" : "mt-3";
@@ -51,6 +52,20 @@ const TvSeriesScreen = () => {
   const [selectedSeason, setSelectedSeason] = useState(1);
   const [episodes, setEpisodes] = useState([]);
   const [episodesLoading, setEpisodesLoading] = useState(false);
+  const [userFavouriteList, setUserFavouriteListe] = useState([]);
+
+  async function fetchFromLocal() {
+    try {
+      const data = await AsyncStorage.getItem("users-favourite");
+      if (data.length > 0) {
+        const parsedData = JSON.parse(data);
+        setUserFavouriteListe(parsedData);
+        setIsFavourite(parsedData.some((itr) => itr.id === item.id));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const fetchData = async () => {
     const seriesDetailsData = await fetchSeriesDetails(item.id);
@@ -87,12 +102,34 @@ const TvSeriesScreen = () => {
     setEpisodesLoading(false);
   };
   useEffect(() => {
+    fetchFromLocal();
     fetchData();
   }, []);
 
   useEffect(() => {
     getSeasonData();
   }, [selectedSeason]);
+
+  // console.log(item?.media_type)
+  async function handleFavouriteClick() {
+    let updatedList = [...userFavouriteList];
+    const updatedItem = { ...item, media_type: "tv" };
+    if (!isFavourite) {
+      updatedList.push(updatedItem);
+    } else {
+      updatedList = updatedList.filter((itr) => itr.id !== item.id);
+    }
+    try {
+      await AsyncStorage.setItem(
+        "users-favourite",
+        JSON.stringify(updatedList)
+      );
+      setUserFavouriteListe(updatedList);
+    } catch (error) {
+      console.error("Error updating AsyncStorage:", error);
+    }
+    setIsFavourite(!isFavourite);
+  }
 
   const renderEpisodes = ({ item: episode }) => {
     return (
@@ -249,7 +286,7 @@ const TvSeriesScreen = () => {
               </Text>
             </View>
             <View className="mt-5 w-52 flex-row justify-around items-center">
-              <TouchableOpacity onPress={() => setIsFavourite(!isFavourite)}>
+              <TouchableOpacity onPress={handleFavouriteClick}>
                 <HeartIcon size="35" color={isFavourite ? "red" : "white"} />
               </TouchableOpacity>
               <View className="flex-col justify-center items-center">

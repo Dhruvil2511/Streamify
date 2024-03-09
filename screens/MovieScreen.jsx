@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   Dimensions,
-  
   Platform,
   ScrollView,
   Text,
@@ -14,7 +13,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Cast from "../components/Cast";
 import MovieList from "../components/MovieList";
-import Svg, { Path, Polygon, Circle } from "react-native-svg";
+import Svg, { Path, Polygon, Circle, err } from "react-native-svg";
 import {
   fallbackposter,
   fetchMovieCredits,
@@ -24,6 +23,8 @@ import {
   original,
 } from "../api/movieDb";
 import { Image } from "react-native-elements";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const ios = Platform.OS === "ios";
 const topMargin = ios ? "" : "mt-3";
 const { width, height } = Dimensions.get("window");
@@ -33,10 +34,28 @@ const MovieScreen = () => {
   const { params: item } = useRoute();
   const [isFavourite, setIsFavourite] = useState(false);
   const [cast, setCast] = useState([]);
+  const [movieDetails, setMovieDetails] = useState({});
   const [similarMovies, setSimilarMovies] = useState([]);
+  const [userFavouriteList, setUserFavouriteListe] = useState([]);
 
+  async function fetchFromLocal() {
+    try {
+      const data = await AsyncStorage.getItem("users-favourite");
+      if (data.length > 0) {
+        const parsedData = JSON.parse(data);
+        console.log(parsedData);
+        setUserFavouriteListe(parsedData);
+        setIsFavourite(parsedData.some((itr) => itr.id === item.id));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
   useEffect(() => {
     const fetchData = async () => {
+      const movieDetailsData = await fetchMovieDetails(item.id);
+      if (movieDetailsData) setMovieDetails(movieDetailsData);
+
       const movieCreditsData = await fetchMovieCredits(item.id);
       if (movieCreditsData && movieCreditsData.cast)
         setCast(movieCreditsData.cast);
@@ -45,8 +64,29 @@ const MovieScreen = () => {
       if (similarMoviesData && similarMoviesData.results)
         setSimilarMovies(similarMoviesData.results);
     };
+    fetchFromLocal();
     fetchData();
   }, [item]);
+
+  async function handleFavouriteClick() {
+    let updatedList = [...userFavouriteList];
+    const updatedItem = { ...item, media_type: "movie" };
+    if (!isFavourite) {
+      updatedList.push(updatedItem);
+    } else {
+      updatedList = updatedList.filter((itr) => itr.id !== item.id);
+    }
+    try {
+      await AsyncStorage.setItem(
+        "users-favourite",
+        JSON.stringify(updatedList)
+      );
+      setUserFavouriteListe(updatedList);
+    } catch (error) {
+      console.error("Error updating AsyncStorage:", error);
+    }
+    setIsFavourite(!isFavourite);
+  }
 
   return (
     <ScrollView
@@ -82,7 +122,7 @@ const MovieScreen = () => {
 
       <View>
         <TouchableOpacity
-          onPress={() => navigation.push("Player", { id: item.id })}
+          onPress={() => navigation.push("Player", { id: movieDetails.id })}
           className="absolute z-20 top-0 left-0 w-full h-full flex justify-center items-center"
         >
           <Svg
@@ -124,8 +164,8 @@ const MovieScreen = () => {
         <Image
           className="rounded-xl"
           source={{
-            uri: item?.backdrop_path
-              ? original(item.backdrop_path)
+            uri: movieDetails?.backdrop_path
+              ? original(movieDetails.backdrop_path)
               : fallbackposter,
           }}
           style={{ width, height: height * 0.55 }}
@@ -143,7 +183,7 @@ const MovieScreen = () => {
         <View className="mx-4 flex-row justify-around items-center">
           <Image
             source={{
-              uri: image185(item.poster_path) || fallbackposter,
+              uri: image185(movieDetails.poster_path) || fallbackposter,
             }}
             className="rounded-xl"
             style={{ width: width * 0.33, height: height * 0.22 }}
@@ -151,24 +191,24 @@ const MovieScreen = () => {
           <View className="flex-col justify-center items-center">
             <View className="flex-row">
               <Text className="text-white text-center text-3xl font-bold flex-1 flex-wrap">
-                {item.title}
+                {movieDetails.title}
               </Text>
             </View>
             <View>
               <Text className="text-neutral-400 font-semibold text-base text-center">
-                {item.status} •{" "}
-                {item?.release_date?.split("-")[0]} •{" "}
-                {item?.runtime} min
+                {movieDetails.status} •{" "}
+                {movieDetails?.release_date?.split("-")[0]} •{" "}
+                {movieDetails?.runtime} min
               </Text>
             </View>
             <View className="mt-5 w-52 flex-row justify-around items-center">
-              <TouchableOpacity onPress={() => setIsFavourite(!isFavourite)}>
+              <TouchableOpacity onPress={handleFavouriteClick}>
                 <HeartIcon size="35" color={isFavourite ? "red" : "white"} />
               </TouchableOpacity>
               <View className="flex-col justify-center items-center">
                 <Text className="text-white text-md">Average Rating</Text>
                 <Text className="text-neutral-500 text-sm font-bold">
-                  {item.vote_average}
+                  {movieDetails.vote_average}
                 </Text>
               </View>
             </View>
@@ -176,17 +216,17 @@ const MovieScreen = () => {
         </View>
 
         <View className="flex-row justify-center mx-4  space-x-2">
-          {item.genres?.map((genre, index) => (
+          {movieDetails.genres?.map((genre, index) => (
             <Text
               key={index}
               className="text-neutral-400 font-semibold text-base text-center"
             >
-              {genre?.name} {index < item.genres.length - 1 ? "•" : ""}
+              {genre?.name} {index < movieDetails.genres.length - 1 ? "•" : ""}
             </Text>
           ))}
         </View>
         <Text className="text-neutral-400 mx-4 tracking-wide ">
-          {item?.overview}
+          {movieDetails?.overview}
         </Text>
       </View>
       {cast.length > 0 && <Cast cast={cast} />}

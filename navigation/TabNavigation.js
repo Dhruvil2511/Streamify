@@ -5,7 +5,7 @@ import Home from "../screens/Home";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MoviesTab from "../screens/MoviesTab";
 import TvSeriesTab from "../screens/TvSeriesTab";
-import Liked from "../screens/Liked";
+import LikedTab from "../screens/LikedTab";
 
 const Tab = createBottomTabNavigator();
 const TabNavigation = () => {
@@ -50,7 +50,7 @@ const TabNavigation = () => {
       <Tab.Screen
         name="Liked"
         options={{ headerShown: false }}
-        component={Liked}
+        component={LikedTab}
       />
     </Tab.Navigator>
   );
