@@ -29,13 +29,11 @@ const LikedTab = () => {
       let parsedData = JSON.parse(data) || [];
       let changedData = [];
       if (parsedData.length > 0) {
-        console.log(parsedData);
         changedData =
           currentActive === "movies"
             ? parsedData.filter((item) => item.media_type === "movie")
             : parsedData.filter((item) => item.media_type === "tv");
       }
-      console.log(changedData);
       setLikedList(changedData);
     } catch (error) {
       console.log(error);
@@ -123,6 +121,7 @@ const LikedTab = () => {
                         source={{
                           uri: image185(item?.poster_path) || fallbackposter,
                         }}
+                        className="rounded-xl"
                         style={{
                           width: width * 0.29,
                           height: height * 0.18,

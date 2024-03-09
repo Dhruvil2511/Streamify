@@ -116,6 +116,7 @@ const UpcomingScreen = () => {
                     source={{
                       uri: image185(item?.poster_path) || fallbackposter,
                     }}
+                    className="rounded-xl"
                     style={{ width: width * 0.29, height: height * 0.22 }}
                   />
                 </TouchableOpacity>
