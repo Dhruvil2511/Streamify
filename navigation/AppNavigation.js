@@ -9,6 +9,7 @@ import Search from "../screens/Search";
 import Player from "../screens/Player";
 import UpcomingScreen from "../screens/UpcomingScreen";
 import TvSeriesScreen from "../screens/TvSeriesScreen";
+import InfoScreen from "../screens/InfoScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -46,6 +47,11 @@ const AppNavigation = () => {
           name="Search"
           options={{ orientation: "portrait", headerShown: false }}
           component={Search}
+        />
+         <Stack.Screen
+          name="Information"
+          options={{ orientation: "portrait", headerShown: false }}
+          component={InfoScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

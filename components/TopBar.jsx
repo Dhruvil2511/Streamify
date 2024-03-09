@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 
 import React from "react";
 import {
+  InformationCircleIcon,
   MagnifyingGlassIcon,
   UserCircleIcon,
 } from "react-native-heroicons/solid";
@@ -34,7 +35,9 @@ const TopBar = () => {
             </TouchableOpacity>
           </View>
           <View>
-            <UserCircleIcon size={35} strokeWidth={2} color="white" />
+            <TouchableOpacity onPress={() => navigation.navigate("Information")}>
+              <InformationCircleIcon size={35} strokeWidth={2} color="white" />
+            </TouchableOpacity>
           </View>
         </View>
       </View>
