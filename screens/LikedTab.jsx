@@ -48,7 +48,7 @@ const LikedTab = () => {
 
   return (
     <SafeAreaView className="bg-neutral-950 flex-1">
-      <TopBar />
+      {/* <TopBar /> */}
 
       {isLoading && (
         <Progress.Bar

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
-import {  useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import {
   fetchNowPlayingMovies,
   fetchPopularMovies,
@@ -67,7 +67,7 @@ const MoviesTab = () => {
   return (
     <>
       <SafeAreaView className="bg-neutral-950 flex-1">
-        <TopBar />
+        {/* <TopBar /> */}
         {isLoading && (
           <Progress.Bar
             indeterminate
@@ -93,9 +93,7 @@ const MoviesTab = () => {
               borderRadius: 5,
             }}
           >
-            <Text className="text-white px-3 opacity-100">
-              Popular
-            </Text>
+            <Text className="text-white px-3 opacity-100">Popular</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
@@ -110,9 +108,7 @@ const MoviesTab = () => {
               borderRadius: 5,
             }}
           >
-            <Text className="text-white px-3">
-              Top Rated
-            </Text>
+            <Text className="text-white px-3">Top Rated</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
@@ -127,9 +123,7 @@ const MoviesTab = () => {
               borderRadius: 5,
             }}
           >
-            <Text className="text-white px-3">
-              Latest
-            </Text>
+            <Text className="text-white px-3">Latest</Text>
           </TouchableOpacity>
         </View>
         {results.length > 0 ? (

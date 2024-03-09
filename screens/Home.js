@@ -86,7 +86,6 @@ const Home = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-neutral-950">
-      <TopBar />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 10 }}

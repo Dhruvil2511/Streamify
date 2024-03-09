@@ -13,9 +13,9 @@ const ios = Platform.OS === "ios";
 const TopBar = () => {
   const navigation = useNavigation();
   return (
-    <View className={ios ? "-mb-2" : "mb-3"}>
+    <View className={ios ? "-mb-2 bg-neutral-950 " : "bg-neutral-950"}>
       <StatusBar style="light" />
-      <View className="flex-row justify-between items-center w-100 mx-4">
+      <View className="flex-row justify-between h-10 items-center w-100 mx-2 mt-5">
         <View className="flex-row justify-start items-center">
           <View>
             <Image

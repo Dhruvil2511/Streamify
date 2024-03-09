@@ -75,7 +75,7 @@ const Search = () => {
     }
   };
   return (
-    <SafeAreaView className="bg-neutral-900 flex-1">
+    <SafeAreaView className="bg-neutral-950 flex-1">
       <View className="flex-row justify-center w-full items-center">
         <View className="my-3 w-96  flex-row justify-between items-center border border-neutral-500 rounded-xl">
           <TouchableOpacity

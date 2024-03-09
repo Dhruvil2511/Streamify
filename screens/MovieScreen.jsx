@@ -43,7 +43,6 @@ const MovieScreen = () => {
       const data = await AsyncStorage.getItem("users-favourite");
       if (data.length > 0) {
         const parsedData = JSON.parse(data);
-        console.log(parsedData);
         setUserFavouriteListe(parsedData);
         setIsFavourite(parsedData.some((itr) => itr.id === item.id));
       }
