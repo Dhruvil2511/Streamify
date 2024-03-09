@@ -31,7 +31,7 @@ const MovieCard = ({ item, handleClick }) => {
             : item.title}
         </Text>
         <Text className="my-2 text-center text-neutral-500 font-semibold text-md">
-          {item?.media_type?.toUpperCase()} • {item.media_type==="tv"?item?.first_air_date:item?.release_date}
+          {item.media_type==="tv"?item?.first_air_date:item?.release_date}
         </Text>
       </View>
     </View>

@@ -18,33 +18,33 @@ const AppNavigation = () => {
       <Stack.Navigator>
         <Stack.Screen
           name="TabNavigation"
-          options={{ headerShown: false }}
+          options={{ orientation: "portrait", headerShown: false }}
           component={TabNavigation}
         />
 
         <Stack.Screen
           name="MovieScreen"
-          options={{ headerShown: false }}
+          options={{ orientation: "portrait", headerShown: false }}
           component={MovieScreen}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="TvSeriesScreen"
-          options={{ headerShown: false }}
+          options={{ orientation: "portrait", headerShown: false }}
           component={TvSeriesScreen}
         />
         <Stack.Screen
           name="Player"
-          options={{ orientation: "landscape", headerShown: false }}
+          options={{ orientation: "all", headerShown: false }}
           component={Player}
         />
         <Stack.Screen
           name="Upcoming"
-          options={{ headerShown: false }}
+          options={{ orientation: "portrait", headerShown: false }}
           component={UpcomingScreen}
         />
         <Stack.Screen
           name="Search"
-          options={{ headerShown: false }}
+          options={{ orientation: "portrait", headerShown: false }}
           component={Search}
         />
       </Stack.Navigator>

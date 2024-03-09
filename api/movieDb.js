@@ -26,6 +26,8 @@ const topRatedSeriesEndpoint = `${apiBaseURL}/tv/top_rated?api_key=${process.env
 const latestSeriesEndpoint = `${apiBaseURL}/discover/tv?first_air_date.lte=${getDynamicDate()}&include_null_first_air_dates=false&language=en-US&sort_by=first_air_date.desc&vote_average.gte=6&with_original_language=en&api_key=${
   process.env.EXPO_PUBLIC_API_KEY
 }`;
+const getMovieTrailerEndpoint = (id) => `${apiBaseURL}/movie/${id}/videos`;
+const getSeriesTrailerEndpoint = (id) => `${apiBaseURL}/tv/${id}/videos`;
 
 export const fallbackposter =
   "https://static.displate.com/460x640/displate/2022-04-15/7422bfe15b3ea7b5933dffd896e9c7f9_46003a1b7353dc7b5a02949bd074432a.avif";
@@ -120,6 +122,12 @@ export const fetchSeriesCredits = (id) => {
 };
 export const fetchSimilarSeries = (id) => {
   return apiCall(similarSeriesEndpoint(id));
+};
+export const fetchMovieTrailer = (id) => {
+  return apiCall(getMovieTrailerEndpoint(id));
+};
+export const fetchSeriesTrailer = (id) => {
+  return apiCall(getSeriesTrailerEndpoint(id));
 };
 
 export const fetchSeasonData = (id, seasonNumber) => {

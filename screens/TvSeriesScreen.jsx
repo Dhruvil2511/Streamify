@@ -208,7 +208,7 @@ const TvSeriesScreen = () => {
         </SafeAreaView>
       </View>
 
-      <View>
+      <View className="w-full">
         <Image
           className="rounded-xl"
           source={{

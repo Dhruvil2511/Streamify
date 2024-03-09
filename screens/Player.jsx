@@ -1,80 +1,59 @@
-import React, { useEffect, useState } from "react";
-import WebView from "react-native-webview";
+import React, { useEffect, useState, useRef } from "react";
 import { useRoute } from "@react-navigation/native";
 import {
   ActivityIndicator,
+  Alert,
+  AppState,
   Dimensions,
+  Linking,
   Platform,
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { ChevronLeftIcon } from "react-native-heroicons/solid";
-import { useNavigation } from "@react-navigation/native";
-const { width, height } = Dimensions.get("screen");
 
-const ios = Platform.OS === "ios";
-const topMargin = ios ? "" : "mt-3";
+import { WebView } from "react-native-webview";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 const Player = () => {
-  const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(true);
+
   const {
     params: { id, episode, season },
   } = useRoute();
 
-  const [embedString, setEmbedString] = useState("https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1");
+  const [embedString, setEmbedString] = useState(
+    `https://www.2embed.skin/embed/${id}`
+  );
+
   useEffect(() => {
-    console.log(id, season, episode);
-    if (id)
+    if (id) setEmbedString(`https://www.2embed.skin/embed/${id}`);
+    if (id && episode && season) {
       setEmbedString(
-        `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1`
-      );
-    if (episode && season) {
-      setEmbedString(
-        `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${season}&e=${episode}`
+        `https://www.2embed.skin/embedtv/${id}&s=${season}&e=${episode}`
       );
     }
     setIsLoading(false);
   }, [id]);
-  useEffect(() => {
-    console.log(embedString);
-  }, [embedString]);
 
   return isLoading ? (
-    <ActivityIndicator />
+    <SafeAreaView className="flex-1 justify-center items-center  bg-neutral-950">
+      <ActivityIndicator className="bg-neutral-950" size={30} />
+    </SafeAreaView>
   ) : (
-    <>
-      <View className="w-full">
-        <SafeAreaView
-          className={`absolute z-20 w-full flex-row justify-between px-5 ${topMargin}`}
-        >
-          <TouchableOpacity
-            className="rounded-xl p-1 bg-blue-600"
-            onPress={() => navigation.goBack()}
-          >
-            <ChevronLeftIcon size={28} strokeWidth={2.5} color="white" />
-          </TouchableOpacity>
-        </SafeAreaView>
-      </View>
+    <SafeAreaView className="flex-1  bg-neutral-950">
       <WebView
-        className="bg-neutral-800"
-        allowsFullscreenVideo={true}
-        bounces={false}
+        className="bg-neutral-950"
         source={{
-          html: `
-        <!DOCTYPE html>
-        <html>
-        <head></head> 
-        <body>
-        <iframe src=${embedString}
-        title="Player" allowfullscreen width="100%" height=${height*1.1}>
-        </iframe>
-        </body>
-        </html>
-        `,
+          html: `<iframe src="${embedString}" sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation" style="width: 100%; height: 100%;" frameborder="0"  allowfullscreen></iframe>`,
         }}
+        limitsNavigationsToAppBoundDomains={true}
+        allowsFullscreenVideo={true}
+        textInteractionEnabled={false}
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        startInLoadingState
       />
-    </>
+    </SafeAreaView>
   );
 };
 

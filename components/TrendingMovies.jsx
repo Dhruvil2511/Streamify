@@ -11,20 +11,19 @@ import React, { useEffect, useState } from "react";
 import Carousel from "react-native-snap-carousel";
 import MovieCard from "./MovieCard";
 import { useNavigation } from "@react-navigation/native";
-import { original } from "../api/movieDb";
-import { HeartIcon } from "react-native-heroicons/solid";
 import { LinearGradient } from "expo-linear-gradient";
 
 const { width, height } = Dimensions.get("window");
+
 const TrendingMovies = ({ data }) => {
   const [currentItem, setCurrentItem] = useState();
-  const [isFavourite, setIsFavourite] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
     setCurrentItem(data[0]);
   }, []);
 
+  
   function handleClick(item) {
     if (item.media_type === "tv") navigation.navigate("TvSeriesScreen", item);
     else navigation.navigate("MovieScreen", item);
@@ -32,8 +31,9 @@ const TrendingMovies = ({ data }) => {
   function handleRenderItem({ item }) {
     return <MovieCard item={item} handleClick={handleClick} />;
   }
+ 
   return (
-    <View className="mb-5">
+    <View className="mb-5 w-full">
       <Text className="text-white text-xl font-bold mx-5 my-5">Trending</Text>
       <Carousel
         autoplay
@@ -87,9 +87,10 @@ const TrendingMovies = ({ data }) => {
         </View>
 
         <View className="flex-1 justify-center items-center">
-          <TouchableOpacity onPress={() => setIsFavourite(!isFavourite)}>
-            <HeartIcon size="45" color={isFavourite ? "red" : "white"} />
-          </TouchableOpacity>
+          <Text className="text-white text-lg">Type</Text>
+          <Text className="text-neutral-400 text-sm">
+            {currentItem?.media_type.toUpperCase()}
+          </Text>
         </View>
       </View>
     </View>

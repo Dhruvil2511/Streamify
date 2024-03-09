@@ -33,14 +33,10 @@ const MovieScreen = () => {
   const { params: item } = useRoute();
   const [isFavourite, setIsFavourite] = useState(false);
   const [cast, setCast] = useState([]);
-  const [movieDetails, setMovieDetails] = useState({});
   const [similarMovies, setSimilarMovies] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const movieDetailsData = await fetchMovieDetails(item.id);
-      if (movieDetailsData) setMovieDetails(movieDetailsData);
-
       const movieCreditsData = await fetchMovieCredits(item.id);
       if (movieCreditsData && movieCreditsData.cast)
         setCast(movieCreditsData.cast);
@@ -86,7 +82,7 @@ const MovieScreen = () => {
 
       <View>
         <TouchableOpacity
-          onPress={() => navigation.push("Player", { id: movieDetails.id })}
+          onPress={() => navigation.push("Player", { id: item.id })}
           className="absolute z-20 top-0 left-0 w-full h-full flex justify-center items-center"
         >
           <Svg
@@ -128,8 +124,8 @@ const MovieScreen = () => {
         <Image
           className="rounded-xl"
           source={{
-            uri: movieDetails?.backdrop_path
-              ? original(movieDetails.backdrop_path)
+            uri: item?.backdrop_path
+              ? original(item.backdrop_path)
               : fallbackposter,
           }}
           style={{ width, height: height * 0.55 }}
@@ -147,7 +143,7 @@ const MovieScreen = () => {
         <View className="mx-4 flex-row justify-around items-center">
           <Image
             source={{
-              uri: image185(movieDetails.poster_path) || fallbackposter,
+              uri: image185(item.poster_path) || fallbackposter,
             }}
             className="rounded-xl"
             style={{ width: width * 0.33, height: height * 0.22 }}
@@ -155,14 +151,14 @@ const MovieScreen = () => {
           <View className="flex-col justify-center items-center">
             <View className="flex-row">
               <Text className="text-white text-center text-3xl font-bold flex-1 flex-wrap">
-                {movieDetails.title}
+                {item.title}
               </Text>
             </View>
             <View>
               <Text className="text-neutral-400 font-semibold text-base text-center">
-                {movieDetails.status} •{" "}
-                {movieDetails?.release_date?.split("-")[0]} •{" "}
-                {movieDetails?.runtime} min
+                {item.status} •{" "}
+                {item?.release_date?.split("-")[0]} •{" "}
+                {item?.runtime} min
               </Text>
             </View>
             <View className="mt-5 w-52 flex-row justify-around items-center">
@@ -172,7 +168,7 @@ const MovieScreen = () => {
               <View className="flex-col justify-center items-center">
                 <Text className="text-white text-md">Average Rating</Text>
                 <Text className="text-neutral-500 text-sm font-bold">
-                  {movieDetails.vote_average}
+                  {item.vote_average}
                 </Text>
               </View>
             </View>
@@ -180,17 +176,17 @@ const MovieScreen = () => {
         </View>
 
         <View className="flex-row justify-center mx-4  space-x-2">
-          {movieDetails.genres?.map((genre, index) => (
+          {item.genres?.map((genre, index) => (
             <Text
               key={index}
               className="text-neutral-400 font-semibold text-base text-center"
             >
-              {genre?.name} {index < movieDetails.genres.length - 1 ? "•" : ""}
+              {genre?.name} {index < item.genres.length - 1 ? "•" : ""}
             </Text>
           ))}
         </View>
         <Text className="text-neutral-400 mx-4 tracking-wide ">
-          {movieDetails?.overview}
+          {item?.overview}
         </Text>
       </View>
       {cast.length > 0 && <Cast cast={cast} />}

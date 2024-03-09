@@ -34,7 +34,7 @@ const TabNavigation = () => {
     >
       <Tab.Screen
         name="Home"
-        options={{ headerShown: false }}
+        options={{  headerShown: false }}
         component={Home}
       />
       <Tab.Screen
