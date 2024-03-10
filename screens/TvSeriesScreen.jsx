@@ -14,7 +14,6 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   ChevronLeftIcon,
   HeartIcon,
-  ListBulletIcon,
 } from "react-native-heroicons/solid";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -57,7 +56,7 @@ const TvSeriesScreen = () => {
   async function fetchFromLocal() {
     try {
       const data = await AsyncStorage.getItem("users-favourite");
-      if (data.length > 0) {
+      if (data?.length > 0) {
         const parsedData = JSON.parse(data);
         setUserFavouriteListe(parsedData);
         setIsFavourite(parsedData.some((itr) => itr.id === item.id));
@@ -196,7 +195,7 @@ const TvSeriesScreen = () => {
                   className="ml-1 text-lg text-white text-left font-bold "
                   numberOfLines={2}
                 >
-                  {episode?.name.length > 30
+                  {episode?.name?.length > 30
                     ? episode.name.slice(0, 30) + "..."
                     : episode.name}
                 </Text>
@@ -307,7 +306,7 @@ const TvSeriesScreen = () => {
                 className="text-neutral-400 font-semibold text-base text-center flex  flex-wrap"
               >
                 {genre?.name}{" "}
-                {index < seriesDetails.genres.length - 1 ? "•" : ""}
+                {index < seriesDetails?.genres?.length - 1 ? "•" : ""}
               </Text>
             ))}
           </View>
@@ -358,8 +357,8 @@ const TvSeriesScreen = () => {
           />
         )}
 
-        {cast.length > 0 && <Cast cast={cast} />}
-        {similarSeries.length > 0 && (
+        {cast?.length > 0 && <Cast cast={cast} />}
+        {similarSeries?.length > 0 && (
           <MovieList
             title="Similar Series"
             hideSeeAll={true}

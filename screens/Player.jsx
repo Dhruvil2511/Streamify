@@ -16,20 +16,25 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const Player = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [movieOrNot, setMovieOrNot] = useState(true);
 
   const {
     params: { id, episode, season },
   } = useRoute();
 
   const [embedString, setEmbedString] = useState(
-    `https://www.2embed.skin/embed/${id}`
+    `https://www.2embed.cc/embed/${id}`
   );
 
   useEffect(() => {
-    if (id) setEmbedString(`https://www.2embed.skin/embed/${id}`);
+    if (id) {
+      setMovieOrNot(true);
+      setEmbedString(`https://www.2embed.cc/embed/${id}`);
+    }
     if (id && episode && season) {
+      setMovieOrNot(false);
       setEmbedString(
-        `https://www.2embed.skin/embedtv/${id}&s=${season}&e=${episode}`
+        `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${season}&e=${episode}`
       );
     }
     setIsLoading(false);
@@ -43,9 +48,15 @@ const Player = () => {
     <SafeAreaView className="flex-1  bg-neutral-950">
       <WebView
         className="bg-neutral-950"
-        source={{
-          html: `<iframe src="${embedString}" sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation" style="width: 100%; height: 100%;" frameborder="0"  allowfullscreen></iframe>`,
-        }}
+        source={
+          movieOrNot
+            ? {
+                html: `<iframe src="${embedString}" sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation" style="width: 100%; height: 100%;" frameborder="0"  allowfullscreen></iframe>`,
+              }
+            : {
+                html: `<iframe src="${embedString}"  style="width: 100%; height: 100%;" frameborder="0"  allowfullscreen></iframe>`,
+              }
+        }
         limitsNavigationsToAppBoundDomains={true}
         allowsFullscreenVideo={true}
         textInteractionEnabled={false}

@@ -41,7 +41,7 @@ const MovieScreen = () => {
   async function fetchFromLocal() {
     try {
       const data = await AsyncStorage.getItem("users-favourite");
-      if (data.length > 0) {
+      if (data?.length > 0) {
         const parsedData = JSON.parse(data);
         setUserFavouriteListe(parsedData);
         setIsFavourite(parsedData.some((itr) => itr.id === item.id));
@@ -220,7 +220,8 @@ const MovieScreen = () => {
               key={index}
               className="text-neutral-400 font-semibold text-base text-center"
             >
-              {genre?.name} {index < movieDetails.genres.length - 1 ? "•" : ""}
+              {genre?.name}{" "}
+              {index < movieDetails?.genres?.length - 1 ? "•" : ""}
             </Text>
           ))}
         </View>
@@ -228,8 +229,8 @@ const MovieScreen = () => {
           {movieDetails?.overview}
         </Text>
       </View>
-      {cast.length > 0 && <Cast cast={cast} />}
-      {similarMovies.length > 0 && (
+      {cast?.length > 0 && <Cast cast={cast} />}
+      {similarMovies?.length > 0 && (
         <MovieList
           title="Similar Movies"
           hideSeeAll={true}

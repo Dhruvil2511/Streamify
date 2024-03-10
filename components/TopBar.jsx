@@ -14,9 +14,8 @@ const ios = Platform.OS === "ios";
 const TopBar = () => {
   const navigation = useNavigation();
   return (
-    <View className={ios ? "-mb-2 bg-neutral-950 " : "bg-neutral-950"}>
-      <StatusBar style="light" />
-      <View className="flex-row justify-between h-10 items-center w-100 mx-2 mt-5">
+    <View className="bg-neutral-950 py-6">
+      <View className="flex-row justify-between items-center w-100 mx-2 ">
         <View className="flex-row justify-start items-center">
           <View>
             <Image
@@ -35,7 +34,9 @@ const TopBar = () => {
             </TouchableOpacity>
           </View>
           <View>
-            <TouchableOpacity onPress={() => navigation.navigate("Information")}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Information")}
+            >
               <InformationCircleIcon size={35} strokeWidth={2} color="white" />
             </TouchableOpacity>
           </View>

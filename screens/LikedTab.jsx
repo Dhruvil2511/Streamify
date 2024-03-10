@@ -47,7 +47,7 @@ const LikedTab = () => {
   }, [currentActive]);
 
   return (
-    <SafeAreaView className="bg-neutral-950 flex-1">
+    <View className="bg-neutral-950 flex-1">
       {/* <TopBar /> */}
 
       {isLoading && (
@@ -162,7 +162,7 @@ const LikedTab = () => {
           <Text className="text-white">Your liked movies will appear here</Text>
         </View>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 

@@ -5,12 +5,12 @@ import { fallbackposter, image185 } from "../api/movieDb";
 
 const { width, height } = Dimensions.get("window");
 
-const MovieItem = memo(({ item }) => {
+const MovieItem = memo(({ item, title }) => {
   const navigation = useNavigation();
 
   const handlePress = () => {
-    if (item?.media_type === "tv") navigation.navigate("TvSeriesScreen", item);
-    else navigation.navigate("MovieScreen", item);
+    if (title?.includes("Movies")) navigation.navigate("MovieScreen", item);
+    else navigation.navigate("TvSeriesScreen", item);
   };
 
   return (

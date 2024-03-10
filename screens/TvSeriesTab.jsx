@@ -82,7 +82,7 @@ const TvSeriesTab = () => {
 
   return (
     <>
-      <SafeAreaView className="bg-neutral-950 flex-1">
+      <View className="bg-neutral-950 flex-1">
         {/* <TopBar /> */}
         {isLoading && (
           <Progress.Bar
@@ -160,7 +160,7 @@ const TvSeriesTab = () => {
             <FilmIcon size="50" color="white" />
           </View>
         )}
-      </SafeAreaView>
+      </View>
     </>
   );
 };

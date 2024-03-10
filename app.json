@@ -4,12 +4,12 @@
     "slug": "Streamify",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "icon": "./assets/logo_2.png",
+    "userInterfaceStyle": "dark",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -19,12 +19,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "foregroundImage": "./assets/logo_2.png",
+        "backgroundColor": "#000000"
+      },
+      "package": "com.dhruvil2511.Streamify"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/logo_2.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4eb348ed-52a0-4e33-b942-91c1880fe1b6"
+      }
     }
   }
 }

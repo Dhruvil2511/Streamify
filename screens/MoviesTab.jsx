@@ -9,8 +9,6 @@ import {
 import { FilmIcon } from "react-native-heroicons/solid";
 import * as Progress from "react-native-progress";
 import MovieItem from "../components/MovieItem";
-import TopBar from "../components/TopBar";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const MoviesTab = () => {
   const { params: title } = useRoute();
@@ -62,11 +60,11 @@ const MoviesTab = () => {
     setCurrentPage(currentPage + 1);
   };
 
-  const renderMovieItem = ({ item }) => <MovieItem item={item} />;
+  const renderMovieItem = ({ item }) => <MovieItem item={item} title={currentActive}  />;
 
   return (
     <>
-      <SafeAreaView className="bg-neutral-950 flex-1">
+      <View className="bg-neutral-950 flex-1">
         {/* <TopBar /> */}
         {isLoading && (
           <Progress.Bar
@@ -143,7 +141,7 @@ const MoviesTab = () => {
             <FilmIcon size={50} color="white" />
           </View>
         )}
-      </SafeAreaView>
+      </View>
     </>
   );
 };
