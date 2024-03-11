@@ -5,9 +5,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 
 const InfoScreen = () => {
-    const navigation=useNavigation();
+  const navigation = useNavigation();
   return (
-    <SafeAreaView className="bg-neutral-950 flex-1">
+    <SafeAreaView className="pt-6 bg-neutral-950 flex-1">
       <View className="flex-row justify-center items-center">
         <Text className="text-white text-xl font-bold">
           Information about project

@@ -5,6 +5,15 @@ import AppNavigation from "./navigation/AppNavigation";
 
 export default function App() {
   return (
-    <AppNavigation/>
+    <>
+      <StatusBar
+        hidden={true}
+        animated
+        backgroundColor="black"
+        barStyle="dark-content"
+      />
+
+      <AppNavigation />
+    </>
   );
 }

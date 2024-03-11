@@ -11,7 +11,7 @@ import TopBar from "../components/TopBar";
 const Tab = createBottomTabNavigator();
 const TabNavigation = () => {
   return (
-    < >
+    <>
       <TopBar />
       <Tab.Navigator
         screenOptions={({ route }) => ({
