@@ -34,7 +34,8 @@
     "react-native-snap-carousel": "^4.0.0-beta.6",
     "react-native-svg": "14.1.0",
     "react-native-web": "~0.19.6",
-    "react-native-webview": "13.6.4"
+    "react-native-webview": "^13.6.4",
+    "react-native-webview-fullscreen": "^1.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -42,6 +42,7 @@ const Search = () => {
       language: "en-US",
       page: currentPage,
     };
+
     fetchSearch(params)
       .then((data) =>
         data && data.results
@@ -88,14 +89,20 @@ const Search = () => {
           <TextInput
             placeholder="Search a movie.."
             placeholderTextColor="lightgray"
-            onSubmitEditing={() => handleSearchQuery()}
+            onSubmitEditing={() => {
+              setResults([]);
+              handleSearchQuery();
+            }}
             onChangeText={(newText) => setSearchQ(newText)}
             className="px-5 py-4 flex-1 text-base font-semibold text-white tracking-wider"
           />
           <TouchableOpacity
             className="rounded-xl p-3 m-1"
             style={{ backgroundColor: "rgba(229,64,107,1)" }}
-            onPress={() => handleSearchQuery()}
+            onPress={() => {
+              setResults([]);
+              handleSearchQuery();
+            }}
           >
             <MagnifyingGlassIcon size="25" color={"white"} />
           </TouchableOpacity>

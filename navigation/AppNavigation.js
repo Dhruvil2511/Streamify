@@ -35,7 +35,7 @@ const AppNavigation = () => {
         />
         <Stack.Screen
           name="Player"
-          options={{ orientation: "all", headerShown: false }}
+          options={{ orientation: "default", headerShown: false }}
           component={Player}
         />
         <Stack.Screen
@@ -48,7 +48,7 @@ const AppNavigation = () => {
           options={{ orientation: "portrait", headerShown: false }}
           component={Search}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="Information"
           options={{ orientation: "portrait", headerShown: false }}
           component={InfoScreen}
