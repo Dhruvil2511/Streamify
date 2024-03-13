@@ -4,12 +4,11 @@ import {
   TouchableOpacity,
   FlatList,
   Dimensions,
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import TopBar from "../components/TopBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FilmIcon, HeartIcon } from "react-native-heroicons/solid";
+import { HeartIcon } from "react-native-heroicons/solid";
 import { Image } from "react-native-elements";
 import { image185 } from "../api/movieDb";
 import * as Progress from "react-native-progress";
@@ -20,10 +19,13 @@ const LikedTab = () => {
   const [currentActive, setCurrentActive] = useState("movies");
   const [likedList, setLikedList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   const navigation = useNavigation();
 
   const fetchData = async () => {
     setIsLoading(true);
+    setIsRefreshing(true);
     try {
       const data = await AsyncStorage.getItem("users-favourite");
       let parsedData = JSON.parse(data) || [];
@@ -39,6 +41,7 @@ const LikedTab = () => {
       console.log(error);
     } finally {
       setIsLoading(false);
+      setIsRefreshing(false);
     }
   };
 
@@ -48,8 +51,6 @@ const LikedTab = () => {
 
   return (
     <View className="bg-neutral-950 flex-1">
-      {/* <TopBar /> */}
-
       {isLoading && (
         <Progress.Bar
           indeterminate
@@ -154,6 +155,14 @@ const LikedTab = () => {
                 </View>
               );
             }}
+            refreshControl={
+              <RefreshControl
+                refreshing={isRefreshing}
+                onRefresh={() => fetchData()}
+                colors={["rgba(229,64,107,1)"]} // Set colors for the refresh indicator
+                tintColor={"rgba(229,64,107,1)"} // Set tint color for the refresh indicator
+              />
+            }
           />
         </>
       ) : (

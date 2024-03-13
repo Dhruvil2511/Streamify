@@ -6,6 +6,7 @@ import {
   Image,
   Dimensions,
   FlatList,
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView, useSafeAreaFrame } from "react-native-safe-area-context";
@@ -34,6 +35,7 @@ const TvSeriesTab = () => {
   const { params: title } = useRoute();
   const [isLoading, setIsLoading] = useState(false);
   const [currentActive, setCurrentActive] = useState("popular");
+  const [refreshing, setRefreshing] = useState(false); // New state for refreshing
 
   const fetchData = async (page) => {
     setIsLoading(true);
@@ -63,6 +65,7 @@ const TvSeriesTab = () => {
         return [...prevResults, ...filteredResults];
       });
     }
+    setRefreshing(false);
     setIsLoading(false);
   };
 
@@ -154,6 +157,19 @@ const TvSeriesTab = () => {
             numColumns={3}
             contentContainerStyle={{ paddingVertical: 10 }}
             showsVerticalScrollIndicator={false}
+            refreshControl={
+              // Add refreshControl prop to FlatList
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => {
+                  setRefreshing(true); // Set refreshing state to true when refresh is triggered
+                  setCurrentPage(1); // Reset current page to 1
+                  fetchData(1); // Fetch data for the first page
+                }}
+                colors={["rgba(229,64,107,1)"]} // Set colors for the refresh indicator
+                tintColor={"rgba(229,64,107,1)"} // Set tint color for the refresh indicator
+              />
+            }
           />
         ) : (
           <View className="flex-1 justify-center items-center">
