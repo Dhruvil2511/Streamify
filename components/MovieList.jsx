@@ -14,7 +14,7 @@ const { width, height } = Dimensions.get("window");
 const MovieList = ({ title, data, hideSeeAll }) => {
   const navigation = useNavigation();
   return (
-    <View className="my-2 mx-5">
+    <View className="my-2 mx-3">
       <View className="flex-row justify-between items-center ">
         <Text className="text-white text-xl">{title}</Text>
         <TouchableOpacity
@@ -57,9 +57,13 @@ const MovieList = ({ title, data, hideSeeAll }) => {
                   style={{ width: width * 0.33, height: height * 0.22 }}
                 />
                 <Text className="text-white my-2 text-center">
-                  {item?.title?.length > 14
-                    ? item.title.slice(0, 14) + "..."
-                    : item?.title}
+                  {title.includes("Movies")
+                    ? item?.title?.length > 14
+                      ? item.title.slice(0, 14) + "..."
+                      : item?.title
+                    : item?.original_name?.length > 14
+                    ? item.original_name.slice(0, 14) + "..."
+                    : item?.original_name}
                 </Text>
               </TouchableOpacity>
             );

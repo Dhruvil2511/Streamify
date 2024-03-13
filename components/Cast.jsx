@@ -11,7 +11,7 @@ import { fallbackposter, image185 } from "../api/movieDb";
 
 const Cast = React.memo(({ cast }) => {
   return (
-    <View className="my-5 mx-5">
+    <View className="my-5 mx-3">
       <Text className="text-white text-lg my-5">Top Cast</Text>
       <FlatList
         data={cast}
