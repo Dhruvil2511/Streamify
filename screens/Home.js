@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { Alert, ScrollView, View } from "react-native";
 // import { View } from "react-native-safe-area-context";
 import TopBar from "../components/TopBar";
 import TrendingMovies from "../components/TrendingMovies";
@@ -13,8 +13,14 @@ import {
   fetchTopRatedSeries,
 } from "../api/movieDb";
 import * as Progress from "react-native-progress";
+import * as SplashScreen from "expo-splash-screen";
+import { useCallback } from "react";
+import { showAlert } from "../utils/Alert";
+
+SplashScreen.preventAutoHideAsync();
 
 const Home = () => {
+  const [appIsReady, setAppIsReady] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [trending, setTrending] = useState([]);
   const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
@@ -30,12 +36,14 @@ const Home = () => {
     return array;
   };
 
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
         const trendingMoviesData = await fetchTrendingMovies();
         const trendingSeriesData = await fetchTrendingSeries();
+        setAppIsReady(true);
         const topRatedMoviesData = await fetchTopRatedMovies();
         const popularMoviesData = await fetchPopularMovies();
         const nowPlayingMoviesData = await fetchNowPlayingMovies();
@@ -52,7 +60,7 @@ const Home = () => {
         setTopRatedMovies(topRatedMoviesData.results);
         setTopRatedSeries(topRatedSeriesData.results);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        showAlert();
       } finally {
         setIsLoading(false);
       }
@@ -61,8 +69,18 @@ const Home = () => {
     fetchData();
   }, []);
 
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+
+  if (!appIsReady) {
+    return null;
+  }
+
   return (
-    <View className="flex-1 bg-neutral-950">
+    <View className="flex-1 bg-neutral-950" onLayout={onLayoutRootView}>
       <ScrollView contentContainerStyle={{ paddingBottom: 10 }}>
         {isLoading ? (
           <View className="w-full">

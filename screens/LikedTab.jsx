@@ -13,6 +13,7 @@ import { Image } from "react-native-elements";
 import { image185 } from "../api/movieDb";
 import * as Progress from "react-native-progress";
 import { useNavigation } from "@react-navigation/native";
+import { showAlert } from "../utils/Alert";
 
 const { width, height } = Dimensions.get("window");
 const LikedTab = () => {
@@ -38,7 +39,7 @@ const LikedTab = () => {
       }
       setLikedList(changedData);
     } catch (error) {
-      console.log(error);
+      showAlert();
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);

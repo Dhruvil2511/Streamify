@@ -24,6 +24,7 @@ import {
   image342,
 } from "../api/movieDb";
 import * as Progress from "react-native-progress";
+import { showAlert } from "../utils/Alert";
 const { width, height } = Dimensions.get("window");
 const Search = () => {
   const [results, setResults] = useState([]);
@@ -55,7 +56,7 @@ const Search = () => {
             })
           : []
       )
-      .catch((err) => console.error(err))
+      .catch((err) => showAlert())
       .finally(() => {
         setTimeout(() => {
           setIsLoading(false);

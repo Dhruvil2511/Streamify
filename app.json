@@ -22,6 +22,16 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#000000"
       },
+      "splash":{
+        "backgroundColor": "#000000",
+        "resizeMode": "contain",
+        "image": "./assets/splash.png",
+        "mdpi":"./assets/splash.png",
+        "hdpi":"./assets/splash.png",
+        "xdpi":"./assets/splash.png",
+        "xxdpi":"./assets/splash.png",
+        "xxxdpi":"./assets/splash.png"
+      },
       "package": "com.dhruvil2511.Streamify"
     },
     "web": {
