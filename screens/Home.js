@@ -36,14 +36,13 @@ const Home = () => {
     return array;
   };
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
         const trendingMoviesData = await fetchTrendingMovies();
-        const trendingSeriesData = await fetchTrendingSeries();
         setAppIsReady(true);
+        const trendingSeriesData = await fetchTrendingSeries();
         const topRatedMoviesData = await fetchTopRatedMovies();
         const popularMoviesData = await fetchPopularMovies();
         const nowPlayingMoviesData = await fetchNowPlayingMovies();
