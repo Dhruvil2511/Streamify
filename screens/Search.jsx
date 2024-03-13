@@ -140,6 +140,7 @@ const Search = () => {
                 >
                   <View className="w-full flex-row my-2 justify-start items-center">
                     <TouchableOpacity
+                      className="w-full flex-row my-2 justify-start items-center"
                       onPress={() => {
                         item.media_type === "tv"
                           ? navigation.navigate("TvSeriesScreen", item)
@@ -156,30 +157,30 @@ const Search = () => {
                           height: height * 0.18,
                         }}
                       />
+                      <View className="ml-5 py-2 w-full my-2 flex-col justify-start items-start">
+                        <View className="flex-row w-60">
+                          <Text
+                            className="text-white w-72 font-semibold  text-xl flex-1 flex-wrap"
+                            numberOfLines={2}
+                          >
+                            {item.media_type === "tv"
+                              ? item?.name?.length > 30
+                                ? item?.name.slice(0, 30) + "..."
+                                : item?.name
+                              : item?.title?.length > 30
+                              ? item?.title.slice(0, 30) + "..."
+                              : item?.title}
+                            {}
+                          </Text>
+                        </View>
+                        <View>
+                          <Text className="text-neutral-500 font-bold text-md">
+                            {item?.media_type.toUpperCase()} • Rating :{" "}
+                            {item.vote_average}
+                          </Text>
+                        </View>
+                      </View>
                     </TouchableOpacity>
-                    <View className="ml-5 py-2 w-full my-2 flex-col justify-start items-start">
-                      <View className="flex-row w-60">
-                        <Text
-                          className="text-white w-72 font-semibold  text-xl flex-1 flex-wrap"
-                          numberOfLines={2}
-                        >
-                          {item.media_type === "tv"
-                            ? item?.name?.length > 30
-                              ? item?.name.slice(0, 30) + "..."
-                              : item?.name
-                            : item?.title?.length > 30
-                            ? item?.title.slice(0, 30) + "..."
-                            : item?.title}
-                          {}
-                        </Text>
-                      </View>
-                      <View>
-                        <Text className="text-neutral-500 font-bold text-md">
-                          {item?.media_type.toUpperCase()} • Rating :{" "}
-                          {item.vote_average}
-                        </Text>
-                      </View>
-                    </View>
                   </View>
                 </View>
               );

@@ -5,6 +5,7 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
+  ActivityIndicator,
   View,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -37,6 +38,7 @@ const MovieScreen = () => {
   const [movieDetails, setMovieDetails] = useState({});
   const [similarMovies, setSimilarMovies] = useState([]);
   const [userFavouriteList, setUserFavouriteListe] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   async function fetchFromLocal() {
     try {
@@ -52,8 +54,10 @@ const MovieScreen = () => {
   }
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       const movieDetailsData = await fetchMovieDetails(item.id);
       if (movieDetailsData) setMovieDetails(movieDetailsData);
+      setIsLoading(false);
 
       const movieCreditsData = await fetchMovieCredits(item.id);
       if (movieCreditsData && movieCreditsData.cast)
@@ -120,46 +124,55 @@ const MovieScreen = () => {
       </View>
 
       <View>
-        <TouchableOpacity
-          onPress={() => navigation.push("Player", { id: movieDetails.id })}
-          className="absolute z-20 top-0 left-0 w-full h-full flex justify-center items-center"
-        >
-          <Svg
-            fill="#ffffff"
-            width="100px"
-            height="100px"
-            viewBox="0 0 24 24"
-            id="play"
-            data-name="Line Color"
-            xmlns="http://www.w3.org/2000/svg"
-            className="icon line-color"
+        {isLoading ? (
+          <ActivityIndicator
+            className="absolute z-20 top-0 left-0 w-full h-full flex justify-center items-center"
+            size={50}
+            color="white"
+          />
+        ) : (
+          <TouchableOpacity
+            onPress={() => navigation.push("Player", { id: movieDetails.id })}
+            className="absolute z-20 top-0 left-0 w-full h-full flex justify-center items-center"
           >
-            <Polygon
-              id="secondary"
-              points="16 12 10 16 10 8 16 12"
-              style={{
-                fill: "none",
-                stroke: "rgba(255,255,255,0.5)",
-                strokeLinecap: "round",
-                strokeLinejoin: "round",
-                strokeWidth: 2,
-              }}
-            />
-            <Circle
-              id="primary"
-              cx={12}
-              cy={12}
-              r={9}
-              style={{
-                fill: "none",
-                stroke: "rgba(255,255,255,0.5)",
-                strokeLinecap: "round",
-                strokeLinejoin: "round",
-                strokeWidth: 2,
-              }}
-            />
-          </Svg>
-        </TouchableOpacity>
+            <Svg
+              fill="#ffffff"
+              width="100px"
+              height="100px"
+              viewBox="0 0 24 24"
+              id="play"
+              data-name="Line Color"
+              xmlns="http://www.w3.org/2000/svg"
+              className="icon line-color"
+            >
+              <Polygon
+                id="secondary"
+                points="16 12 10 16 10 8 16 12"
+                style={{
+                  fill: "none",
+                  stroke: "rgba(255,255,255,0.5)",
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeWidth: 2,
+                }}
+              />
+              <Circle
+                id="primary"
+                cx={12}
+                cy={12}
+                r={9}
+                style={{
+                  fill: "none",
+                  stroke: "rgba(255,255,255,0.5)",
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeWidth: 2,
+                }}
+              />
+            </Svg>
+          </TouchableOpacity>
+        )}
+
         <Image
           className="rounded-xl"
           source={{
