@@ -28,13 +28,14 @@ import { showAlert } from "../utils/Alert";
 const { width, height } = Dimensions.get("window");
 const Search = () => {
   const [results, setResults] = useState([]);
+  const [noResult, setNoResult] = useState(false);
   const [searchQ, setSearchQ] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
   async function handleSearchQuery() {
-    if (searchQ.trim() === "") return;
+    if (searchQ.trim() === "" || searchQ?.length > 25) return;
     setIsLoading(true);
 
     const params = {
@@ -43,25 +44,35 @@ const Search = () => {
       language: "en-US",
       page: currentPage,
     };
-
     fetchSearch(params)
-      .then((data) =>
-        data && data.results
-          ? setResults((prevResults) => {
-              const existingIds = new Set(prevResults.map((item) => item.id));
-              const filteredResults = data.results.filter(
-                (item) => !existingIds.has(item.id)
-              );
-              return [...prevResults, ...filteredResults];
-            })
-          : []
-      )
+      .then((data) => {
+        if (data.results.length === 0) {
+          setResults([]);
+          setNoResult(true);
+        }
+        else if (data?.results) {
+          setNoResult(false);
+          setResults((prevResults) => {
+            const existingIds = new Set(prevResults.map((item) => item.id));
+            const filteredResults = data.results.filter(
+              (item) => !existingIds.has(item.id)
+            );
+            return [...prevResults, ...filteredResults];
+          });
+        }else{
+          setResults([]);
+        }
+      })
       .catch((err) => showAlert())
       .finally(() => {
         setTimeout(() => {
           setIsLoading(false);
         }, 2000);
       });
+
+
+
+
   }
   useEffect(() => {
     handleSearchQuery();
@@ -125,7 +136,7 @@ const Search = () => {
       {results?.length > 0 ? (
         <>
           <Text className="text-white font-semibold m-1 mx-5">
-            Results ({results?.length})
+            Results:
           </Text>
           <FlatList
             data={results}
@@ -134,6 +145,7 @@ const Search = () => {
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item, index }) => {
+              if (item?.media_type && item.media_type === "person") return null;
               return (
                 <View
                   key={index}
@@ -169,9 +181,9 @@ const Search = () => {
                                 ? item?.name.slice(0, 30) + "..."
                                 : item?.name
                               : item?.title?.length > 30
-                              ? item?.title.slice(0, 30) + "..."
-                              : item?.title}
-                            {}
+                                ? item?.title.slice(0, 30) + "..."
+                                : item?.title}
+                            { }
                           </Text>
                         </View>
                         <View>
@@ -191,7 +203,9 @@ const Search = () => {
       ) : (
         <View className="flex-1 justify-center items-center">
           <FilmIcon size="50" color="white" />
-          <Text className="text-white">Your Search will appear here</Text>
+          <Text className="text-white">
+            {noResult ? "Not Found" : "Your Search will appear here"}
+          </Text>
         </View>
       )}
     </SafeAreaView>
