@@ -46,23 +46,17 @@ const Search = () => {
     };
     fetchSearch(params)
       .then((data) => {
-        if (data.results.length === 0) {
-          setResults([]);
-          setNoResult(true);
-        }
-        else if (data?.results) {
-          setNoResult(false);
-          setResults((prevResults) => {
+        data && data.results
+          ? setResults((prevResults) => {
             const existingIds = new Set(prevResults.map((item) => item.id));
             const filteredResults = data.results.filter(
               (item) => !existingIds.has(item.id)
-            );
+            ).filter((item) => item.media_type !== "person");
             return [...prevResults, ...filteredResults];
-          });
-        }else{
-          setResults([]);
-        }
-      })
+          })
+          : []
+      }
+      )
       .catch((err) => showAlert())
       .finally(() => {
         setTimeout(() => {
@@ -136,7 +130,7 @@ const Search = () => {
       {results?.length > 0 ? (
         <>
           <Text className="text-white font-semibold m-1 mx-5">
-            Results:
+            Results: {results?.length}
           </Text>
           <FlatList
             data={results}
@@ -145,7 +139,6 @@ const Search = () => {
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item, index }) => {
-              if (item?.media_type && item.media_type === "person") return null;
               return (
                 <View
                   key={index}
@@ -204,7 +197,7 @@ const Search = () => {
         <View className="flex-1 justify-center items-center">
           <FilmIcon size="50" color="white" />
           <Text className="text-white">
-            {noResult ? "Not Found" : "Your Search will appear here"}
+            Your Search will appear here
           </Text>
         </View>
       )}
