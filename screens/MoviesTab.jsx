@@ -67,7 +67,8 @@ const MoviesTab = () => {
       if (country) setCountry(country);
 
     } catch (error) {
-      console.log(error);
+      console.log(error); 
+      
     }
   };
 
