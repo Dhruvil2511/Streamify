@@ -66,6 +66,7 @@ const LikedTab = () => {
 
       <View className="my-4 flex-row justify-around w-full items-center">
         <TouchableOpacity
+        className="rounded-xl"
           onPress={() => {
             setCurrentActive("movies");
           }}
@@ -77,9 +78,10 @@ const LikedTab = () => {
             borderRadius: 5,
           }}
         >
-          <Text className="text-white px-3 ">Movies </Text>
+          <Text className="text-white px-3 py-1 ">Movies </Text>
         </TouchableOpacity>
         <TouchableOpacity
+        className="rounded-xl"
           onPress={() => {
             setCurrentActive("series");
           }}
@@ -91,7 +93,7 @@ const LikedTab = () => {
             borderRadius: 5,
           }}
         >
-          <Text className="text-white px-3 ">Tv Series</Text>
+          <Text className="text-white px-3 py-1 ">Tv Series</Text>
         </TouchableOpacity>
       </View>
       {likedList?.length > 0 ? (
