@@ -1,8 +1,13 @@
-# Streamify
+# Streamify (Only for Android)
 <div align="center">
   <img src="./assets/logo_2.png" width="100" />
 </div>
 Streamify is a native mobile app built with Expo and React Native that allows users to explore movies and TV series and watch them on their devices. It utilizes the TMDB API to fetch movie and TV series details.
+
+This product uses the TMDB API for listing content but is not endorsed or certified by TMDB.<div align="left">
+  <img src="./assets/tmdb.svg" width="80" />
+</div>
+
 
 ## Tech Stack
  #### Build with React native expo cli and Native wind for styling.
@@ -73,16 +78,11 @@ npm start
 If you encounter a bug, or have a request for a new feature, please open a New Issue.
 
 ### Disclaimer
- This app was created for learning and project purpose.
-  We do not store any files on our server. We only provide links to
-  media that is hosted on third-party services. If you have any legal
- concerns about the free online movies on this site, you should
- contact the actual file hosts themselves, as we are not affiliated
- with them. We do not host or upload any videos, movies, or media
- files. Streamify is not responsible for the accuracy,
- compliance, copyright, legality, decency, or any other aspect of the
- content on linked sites. If you have any legal issues, please
-  contact the appropriate media file owners or host sites.
+This app was created for learning and project purposes with no intent to commercialize.
+ Streamify is only an interface that provides links to third-party websites hosting movies and TV shows. This app does not host, store, or distribute any content. All media is provided by publicly available third-party services.
+            We do not claim ownership, affiliation, or endorsement of the content available through these external links. All trademarks, copyrights, and media belong to their respective owners.
+            If you are a content owner and believe your copyrighted material is linked improperly, please contact the respective third-party provider to request content removal. We do not have control over external content.
+            All code and design are open-source and available on GitHub.
 
 Connect with me:
 - [LinkedIn](https://www.linkedin.com/in/dhruvil-prajapati-187759221/)
