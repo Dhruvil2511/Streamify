@@ -20,6 +20,7 @@ import {
   fetchNowPlayingMovies,
   fetchPopularMovies,
   fetchPopularSeries,
+  fetchRegionalTVSeries,
   fetchTopRatedMovies,
   fetchTopRatedSeries,
   image185,
@@ -27,10 +28,13 @@ import {
 
 import * as Progress from "react-native-progress";
 import MovieItem from "../components/MovieItem";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const TvSeriesTab = () => {
   const navigation = useNavigation();
   const [currentPage, setCurrentPage] = useState(1);
+  const [country, setCountry] = useState("US");
   const [results, setResults] = useState([]);
   const { params: title } = useRoute();
   const [isLoading, setIsLoading] = useState(false);
@@ -52,6 +56,9 @@ const TvSeriesTab = () => {
       case "latest":
         data = await fetchLatestSeries({ page });
         break;
+      case "regional":
+        await fetchCountry();
+        data = await fetchRegionalTVSeries({ page, country: country });
       default:
         break;
     }
@@ -68,9 +75,19 @@ const TvSeriesTab = () => {
     setRefreshing(false);
     setIsLoading(false);
   };
+  const fetchCountry = async () => {
+    try {
+      const country = await AsyncStorage.getItem("selectedCountry");
+      if (country) setCountry(country);
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     if (title) setCurrentActive("toprated");
+    fetchCountry();
   }, [title]);
 
   useEffect(() => {
@@ -100,6 +117,8 @@ const TvSeriesTab = () => {
         )}
         <View className="my-4 flex-row justify-around w-full items-center">
           <TouchableOpacity
+                      className="rounded-xl"
+
             onPress={() => {
               setCurrentActive("popular");
               setCurrentPage(1);
@@ -112,9 +131,11 @@ const TvSeriesTab = () => {
               borderRadius: 5,
             }}
           >
-            <Text className="text-white px-3 opacity-100">Popular</Text>
+            <Text className="text-white px-3 opacity-100 py-1">Popular</Text>
           </TouchableOpacity>
           <TouchableOpacity
+                      className="rounded-xl"
+
             onPress={() => {
               setCurrentActive("toprated");
               setCurrentPage(1);
@@ -127,7 +148,7 @@ const TvSeriesTab = () => {
               borderRadius: 5,
             }}
           >
-            <Text className="text-white px-3">Top Rated</Text>
+            <Text className="text-white px-3 py-1">Top Rated</Text>
           </TouchableOpacity>
           <TouchableOpacity
             className="rounded-xl"
@@ -143,7 +164,23 @@ const TvSeriesTab = () => {
               borderRadius: 5,
             }}
           >
-            <Text className="text-white px-3">Latest</Text>
+            <Text className="text-white px-3 py-1">Latest</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            className="rounded-xl"
+            onPress={() => {
+              setCurrentActive("regional");
+              setCurrentPage(1);
+            }}
+            style={{
+              backgroundColor:
+                currentActive === "regional"
+                  ? "rgba(229,64,107,0.9)"
+                  : "transparent",
+              borderRadius: 5,
+            }}
+          >
+            <Text className="text-white px-3 py-1">Regional</Text>
           </TouchableOpacity>
         </View>
         {results.length > 0 ? (

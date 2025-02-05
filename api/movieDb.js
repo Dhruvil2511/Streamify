@@ -23,9 +23,8 @@ const topRatedMoviesEndpoint = `${apiBaseURL}/movie/top_rated?api_key=${process.
 const nowPlayingMoviesEndpoint = `${apiBaseURL}/movie/now_playing?api_key=${process.env.EXPO_PUBLIC_API_KEY}`;
 const searchEndpoint = `${apiBaseURL}/search/multi?api_key=${process.env.EXPO_PUBLIC_API_KEY}`;
 const topRatedSeriesEndpoint = `${apiBaseURL}/tv/top_rated?api_key=${process.env.EXPO_PUBLIC_API_KEY}`;
-const latestSeriesEndpoint = `${apiBaseURL}/discover/tv?first_air_date.lte=${getDynamicDate()}&include_null_first_air_dates=false&language=en-US&sort_by=first_air_date.desc&vote_average.gte=6&with_original_language=en&api_key=${
-  process.env.EXPO_PUBLIC_API_KEY
-}`;
+const latestSeriesEndpoint = `${apiBaseURL}/discover/tv?first_air_date.lte=${getDynamicDate()}&include_null_first_air_dates=false&language=en-US&sort_by=first_air_date.desc&vote_average.gte=6&with_original_language=en&api_key=${process.env.EXPO_PUBLIC_API_KEY
+  }`;
 const getMovieTrailerEndpoint = (id) => `${apiBaseURL}/movie/${id}/videos`;
 const getSeriesTrailerEndpoint = (id) => `${apiBaseURL}/tv/${id}/videos`;
 
@@ -71,6 +70,21 @@ export const similarSeriesEndpoint = (id) =>
 export const seasonDataEndpoint = (id, seasonNumber) =>
   `${apiBaseURL}/tv/${id}/season/${seasonNumber}?api_key=${process.env.EXPO_PUBLIC_API_KEY}`;
 
+
+export const countryWiseMoviesEndpoint = (country) => {
+   return `${apiBaseURL}/discover/movie?include_adult=true&include_video=false&language=en-US&release_date.lte=${getDynamicDate()}&sort_by=popularity.desc&vote_average.gte=5&with_origin_country=${country}&api_key=${process.env.EXPO_PUBLIC_API_KEY}`
+}
+export const countryWiseTVSeriesEndpoint = (country) => {
+  return `${apiBaseURL}/discover/tv?first_air_date.lte=${getDynamicDate()}&include_null_first_air_dates=false&language=en-US&sort_by=popularity.desc&vote_average.gte=5&with_origin_country=${country}&api_key=${process.env.EXPO_PUBLIC_API_KEY}`;
+}
+
+export const fetchRegionalMovies = (params = {}) => {
+  return apiCall(countryWiseMoviesEndpoint(params.country),params);
+}
+
+export const fetchRegionalTVSeries = (params = {}) => {
+  return apiCall(countryWiseTVSeriesEndpoint(params.country),params);
+}
 export const fetchTrendingMovies = () => {
   return apiCall(trendingMoviesEndpoint);
 };

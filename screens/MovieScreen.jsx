@@ -12,6 +12,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { ChevronLeftIcon, HeartIcon } from "react-native-heroicons/solid";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ServerSelect from "../components/ServerSelect";
 import Cast from "../components/Cast";
 import MovieList from "../components/MovieList";
 import Svg, { Path, Polygon, Circle, err } from "react-native-svg";
@@ -25,6 +26,7 @@ import {
 } from "../api/movieDb";
 import { Image } from "react-native-elements";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useServer } from "../context/ServerContext";
 
 const ios = Platform.OS === "ios";
 const topMargin = ios ? "" : "mt-3";
@@ -32,6 +34,7 @@ const { width, height } = Dimensions.get("window");
 
 const MovieScreen = () => {
   const navigation = useNavigation();
+  const { selectedServer } = useServer();
   const { params: item } = useRoute();
   const [isFavourite, setIsFavourite] = useState(false);
   const [cast, setCast] = useState([]);
@@ -132,7 +135,7 @@ const MovieScreen = () => {
           />
         ) : (
           <TouchableOpacity
-            onPress={() => navigation.push("Player", { id: movieDetails.id })}
+            onPress={() => navigation.push("Player", { server:selectedServer, id: movieDetails.id })}
             className="absolute z-20 top-0 left-0 w-full h-full flex justify-center items-center"
           >
             <Svg
@@ -226,7 +229,6 @@ const MovieScreen = () => {
             </View>
           </View>
         </View>
-
         <View className="flex-row justify-center mx-4  space-x-2">
           {movieDetails.genres?.map((genre, index) => (
             <Text
@@ -242,6 +244,7 @@ const MovieScreen = () => {
           {movieDetails?.overview}
         </Text>
       </View>
+      <ServerSelect />
       {cast?.length > 0 && <Cast cast={cast} />}
       {similarMovies?.length > 0 && (
         <MovieList

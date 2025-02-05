@@ -33,6 +33,8 @@ import {
 
 import DropDownPicker from "react-native-dropdown-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ServerSelect from "../components/ServerSelect";
+import { useServer } from "../context/ServerContext";
 
 const ios = Platform.OS === "ios";
 const topMargin = ios ? "" : "mt-3";
@@ -40,6 +42,7 @@ const { width, height } = Dimensions.get("window");
 
 const TvSeriesScreen = () => {
   const navigation = useNavigation();
+  const { selectedServer } = useServer();
   const { params: item } = useRoute();
   const [open, setOpen] = useState(false);
   const [isFavourite, setIsFavourite] = useState(false);
@@ -137,6 +140,7 @@ const TvSeriesScreen = () => {
           <TouchableOpacity
             onPress={() =>
               navigation.push("Player", {
+                server: selectedServer,
                 id: item.id,
                 episode: episode.episode_number,
                 season: episode.season_number,
@@ -340,6 +344,8 @@ const TvSeriesScreen = () => {
           setItems={setSeasonsList}
         />
       </View>
+      <ServerSelect />
+
       <View className="mx-5 my-2">
         <Text className="text-white text-2xl">Episodes</Text>
         {episodesLoading ? (
@@ -356,7 +362,6 @@ const TvSeriesScreen = () => {
             showsVerticalScrollIndicator={false}
           />
         )}
-
         {cast?.length > 0 && <Cast cast={cast} />}
         {similarSeries?.length > 0 && (
           <MovieList

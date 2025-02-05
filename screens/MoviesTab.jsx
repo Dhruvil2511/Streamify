@@ -4,17 +4,20 @@ import { useRoute } from "@react-navigation/native";
 import {
   fetchNowPlayingMovies,
   fetchPopularMovies,
+  fetchRegionalMovies,
   fetchTopRatedMovies,
 } from "../api/movieDb";
 import { FilmIcon } from "react-native-heroicons/solid";
 import * as Progress from "react-native-progress";
 import MovieItem from "../components/MovieItem";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const MoviesTab = () => {
   const { params: title } = useRoute();
   const [currentPage, setCurrentPage] = useState(1);
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [country, setCountry] = useState("US");
   const [currentActive, setCurrentActive] = useState("Popular Movies");
   const [refreshing, setRefreshing] = useState(false); // New state for refreshing
 
@@ -33,6 +36,9 @@ const MoviesTab = () => {
       case "Now Playing Movies":
         data = await fetchNowPlayingMovies({ page });
         break;
+      case "Regional Movies":
+        await fetchCountry();
+        data = await fetchRegionalMovies({ page, country: country });
       default:
         break;
     }
@@ -52,7 +58,19 @@ const MoviesTab = () => {
 
   useEffect(() => {
     if (title) setCurrentActive(title);
+    fetchCountry()
   }, [title]);
+
+  const fetchCountry = async () => {
+    try {
+      const country = await AsyncStorage.getItem("selectedCountry");
+      if (country) setCountry(country);
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
   useEffect(() => {
     fetchData(currentPage);
@@ -83,6 +101,7 @@ const MoviesTab = () => {
         )}
         <View className="my-4 flex-row justify-around w-full items-center">
           <TouchableOpacity
+            className="rounded-xl"
             onPress={() => {
               setCurrentActive("Popular Movies");
               setCurrentPage(1);
@@ -95,9 +114,11 @@ const MoviesTab = () => {
               borderRadius: 5,
             }}
           >
-            <Text className="text-white px-3 opacity-100">Popular</Text>
+            <Text className="text-white px-3 opacity-100 py-1">Popular</Text>
           </TouchableOpacity>
           <TouchableOpacity
+            className="rounded-xl"
+
             onPress={() => {
               setCurrentActive("Top Rated Movies");
               setCurrentPage(1);
@@ -110,9 +131,11 @@ const MoviesTab = () => {
               borderRadius: 5,
             }}
           >
-            <Text className="text-white px-3">Top Rated</Text>
+            <Text className="text-white px-3 py-1">Top Rated</Text>
           </TouchableOpacity>
           <TouchableOpacity
+            className="rounded-xl"
+
             onPress={() => {
               setCurrentActive("Now Playing Movies");
               setCurrentPage(1);
@@ -125,7 +148,24 @@ const MoviesTab = () => {
               borderRadius: 5,
             }}
           >
-            <Text className="text-white px-3">Latest</Text>
+            <Text className="text-white px-3 py-1">Latest</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            className="rounded-xl"
+
+            onPress={() => {
+              setCurrentActive("Regional Movies");
+              setCurrentPage(1);
+            }}
+            style={{
+              backgroundColor:
+                currentActive === "Regional Movies"
+                  ? "rgba(229,64,107,0.9)"
+                  : "transparent",
+              borderRadius: 5,
+            }}
+          >
+            <Text className="text-white px-3 py-1">Regional</Text>
           </TouchableOpacity>
         </View>
         {results.length > 0 ? (

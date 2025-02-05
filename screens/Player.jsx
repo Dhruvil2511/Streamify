@@ -91,7 +91,7 @@ const Player = () => {
         source={{ html: `<iframe src="${embedString}" style="width:100%; height:100%;" frameborder="0" scrolling="no" allowfullscreen></iframe>` }}
         limitsNavigationsToAppBoundDomains={true}
         onShouldStartLoadWithRequest={(request) => {
-          if (request.url.startsWith('https://www.2embed.cc/embed') || request.url.startsWith('https://multiembed.mov/directstream.php?') || request.url.startsWith('https://vidsrc.xyz/embed/')) {
+          if (request.url.startsWith('https://flicky.host/embed/') || request.url.startsWith('https://multiembed.mov/directstream.php?') || request.url.startsWith('https://vidsrc.xyz/embed/')) {
             return true;
           }
           return false;
