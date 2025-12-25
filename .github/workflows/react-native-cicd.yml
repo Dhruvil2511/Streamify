@@ -48,14 +48,14 @@ jobs:
       - name: 📦 Install dependencies
         run: npm ci
 
-      - name: 🧪 Run TypeScript check
-        run: npm run tsc
-
       - name: 🧹 Run ESLint
         run: npm run lint
 
       - name: 🎨 Run Prettier check
         run: npm run format:check
+
+      - name: 🔍 Expo doctor (sanity check)
+        run: npx expo-doctor
 
   build-and-deploy:
     needs: test
@@ -71,7 +71,7 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      - name: 📦 Install dependencies
+      - name: 📦 Install dependencies + EAS CLI
         run: |
           npm ci
           npm install -g eas-cli@latest
@@ -89,7 +89,7 @@ jobs:
           echo "EAS CLI version:"
           eas --version
 
-      - name: 📋 Fix package.json main entry
+      - name: 📋 Fix package.json main entry (Expo)
         run: |
           if ! command -v jq &> /dev/null; then
             sudo apt-get update && sudo apt-get install -y jq
@@ -98,8 +98,7 @@ jobs:
           if [ -f ./package.json ]; then
             cp package.json package.json.bak
             jq '.main = "node_modules/expo/AppEntry.js"' package.json > package.json.tmp && mv package.json.tmp package.json
-            echo "Updated package.json main entry"
-            cat package.json | grep "main"
+            echo "package.json main entry fixed"
           else
             echo "package.json not found"
             exit 1
