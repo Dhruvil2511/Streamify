@@ -3,12 +3,6 @@ name: React Native CI/CD
 on:
   push:
     branches: [main, master]
-    paths-ignore:
-      - "**.md"
-      - "LICENSE"
-      - "docs/**"
-  pull_request:
-    branches: [main, master]
   workflow_dispatch:
     inputs:
       buildType:
@@ -22,71 +16,62 @@ on:
 
 env:
   EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-  NODE_OPTIONS: --openssl-legacy-provider
 
 jobs:
-  check-skip:
-    runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
-    steps:
-      - run: echo "Proceeding with workflow"
-
-  build-and-deploy:
-    needs: check-skip
-    if: (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')) || github.event_name == 'workflow_dispatch'
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🏗 Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: 🏗 Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: npm ci
 
-      - name: 📦 Install EAS CLI
+      - name: Install EAS CLI
         run: npm install -g eas-cli@latest
 
-      - name: 🔍 Expo doctor (non-blocking)
+      - name: Verify Expo auth
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "EXPO_TOKEN missing"
+            exit 1
+          else
+            echo "EXPO_TOKEN OK"
+          fi
+
+      - name: Expo doctor (non-blocking)
         run: npx expo-doctor || true
 
-      - name: 📱 Setup EAS build cache
-        uses: actions/cache@v3
-        with:
-          path: ~/.eas-build-local
-          key: ${{ runner.os }}-eas-build-local-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-            ${{ runner.os }}-eas-build-local-
-
-      - name: 📱 Build Development APK
-        if: github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'dev' || github.event_name == 'push'
+      - name: Build DEV APK
+        if: github.event.inputs.buildType == 'dev' || github.event.inputs.buildType == 'all'
         run: |
           export NODE_OPTIONS="--max_old_space_size=4096"
-          eas build --platform android --profile development --local --non-interactive --output=./app-dev.apk
+          EAS_NO_VCS=1 eas build --platform android --profile development --local --non-interactive --output=app-dev.apk
 
-      - name: 📱 Build Production APK
-        if: github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'prod-apk' || github.event_name == 'push'
+      - name: Build PROD APK
+        if: github.event.inputs.buildType == 'prod-apk' || github.event.inputs.buildType == 'all'
         run: |
           export NODE_OPTIONS="--max_old_space_size=4096"
-          eas build --platform android --profile production-apk --local --non-interactive --output=./app-prod.apk
+          EAS_NO_VCS=1 eas build --platform android --profile production-apk --local --non-interactive --output=app-prod.apk
 
-      - name: 📱 Build Production AAB
-        if: github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'prod-aab' || github.event_name == 'push'
+      - name: Build PROD AAB
+        if: github.event.inputs.buildType == 'prod-aab' || github.event.inputs.buildType == 'all'
         run: |
           export NODE_OPTIONS="--max_old_space_size=4096"
-          eas build --platform android --profile production --local --non-interactive --output=./app-prod.aab
+          EAS_NO_VCS=1 eas build --platform android --profile production --local --non-interactive --output=app-prod.aab
 
-      - name: 📦 Upload build artifacts
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: app-builds
+          name: android-builds
           path: |
-            ./app-dev.apk
-            ./app-prod.apk
-            ./app-prod.aab
-          retention-days: 7
+            app-dev.apk
+            app-prod.apk
+            app-prod.aab
