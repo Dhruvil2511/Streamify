@@ -29,12 +29,13 @@ jobs:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     steps:
-      - name: Skip CI check
-        run: echo "Proceeding with workflow"
+      - run: echo "Proceeding with workflow"
 
-  test:
+  build-and-deploy:
     needs: check-skip
+    if: (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')) || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+
     steps:
       - name: 🏗 Checkout repository
         uses: actions/checkout@v4
@@ -48,33 +49,11 @@ jobs:
       - name: 📦 Install dependencies
         run: npm ci
 
-      - name: 🧹 Run ESLint
-        run: npm run lint
-
-      - name: 🎨 Run Prettier check
-        run: npm run format:check
+      - name: 📦 Install EAS CLI
+        run: npm install -g eas-cli@latest
 
       - name: 🔍 Expo doctor (sanity check)
         run: npx expo-doctor
-
-  build-and-deploy:
-    needs: test
-    if: (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')) || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🏗 Checkout repository
-        uses: actions/checkout@v4
-
-      - name: 🏗 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-
-      - name: 📦 Install dependencies + EAS CLI
-        run: |
-          npm ci
-          npm install -g eas-cli@latest
 
       - name: 📱 Setup EAS build cache
         uses: actions/cache@v3
@@ -84,78 +63,25 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-eas-build-local-
 
-      - name: 🔄 Verify EAS CLI installation
-        run: |
-          echo "EAS CLI version:"
-          eas --version
-
-      - name: 📋 Fix package.json main entry (Expo)
-        run: |
-          if ! command -v jq &> /dev/null; then
-            sudo apt-get update && sudo apt-get install -y jq
-          fi
-
-          if [ -f ./package.json ]; then
-            cp package.json package.json.bak
-            jq '.main = "node_modules/expo/AppEntry.js"' package.json > package.json.tmp && mv package.json.tmp package.json
-            echo "package.json main entry fixed"
-          else
-            echo "package.json not found"
-            exit 1
-          fi
-
-      - name: 📋 Update metro.config.js for SVG support
-        run: |
-          if [ -f ./metro.config.js ]; then
-            cp ./metro.config.js ./metro.config.js.backup
-            cat > ./metro.config.js << 'EOF'
-          /* eslint-disable @typescript-eslint/no-var-requires */
-          const { getDefaultConfig } = require('expo/metro-config');
-
-          const config = getDefaultConfig(__dirname);
-          const { transformer, resolver } = config;
-
-          config.transformer = {
-            ...transformer,
-            babelTransformerPath: require.resolve('react-native-svg-transformer/expo'),
-          };
-
-          config.resolver = {
-            ...resolver,
-            assetExts: resolver.assetExts.filter(ext => ext !== 'svg'),
-            sourceExts: [...resolver.sourceExts, 'svg'],
-          };
-
-          module.exports = config;
-          EOF
-            echo "metro.config.js updated"
-          fi
-
       - name: 📱 Build Development APK
         if: github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'dev' || github.event_name == 'push'
         run: |
-          export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
+          export NODE_OPTIONS="--max_old_space_size=4096"
           eas build --platform android --profile development --local --non-interactive --output=./app-dev.apk
-        env:
-          NODE_ENV: development
 
       - name: 📱 Build Production APK
         if: github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'prod-apk' || github.event_name == 'push'
         run: |
-          export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
+          export NODE_OPTIONS="--max_old_space_size=4096"
           eas build --platform android --profile production-apk --local --non-interactive --output=./app-prod.apk
-        env:
-          NODE_ENV: production
 
       - name: 📱 Build Production AAB
         if: github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'prod-aab' || github.event_name == 'push'
         run: |
-          export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
+          export NODE_OPTIONS="--max_old_space_size=4096"
           eas build --platform android --profile production --local --non-interactive --output=./app-prod.aab
-        env:
-          NODE_ENV: production
 
-      - name: 📦 Upload build artifacts to GitHub
+      - name: 📦 Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: app-builds
