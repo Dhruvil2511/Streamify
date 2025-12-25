@@ -43,31 +43,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "yarn"
-
-      - name: 📦 Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-
-      - name: 📦 Setup yarn cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          cache: "npm"
 
       - name: 📦 Install dependencies
-        run: yarn install
+        run: npm ci
 
       - name: 🧪 Run TypeScript check
-        run: yarn tsc
+        run: npm run tsc
 
       - name: 🧹 Run ESLint
-        run: yarn lint
+        run: npm run lint
 
       - name: 🎨 Run Prettier check
-        run: yarn format:check
+        run: npm run format:check
 
   build-and-deploy:
     needs: test
@@ -81,24 +69,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "yarn"
-
-      - name: 📦 Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-
-      - name: 📦 Setup yarn cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          cache: "npm"
 
       - name: 📦 Install dependencies
         run: |
-          yarn install
-          yarn global add eas-cli@latest
+          npm ci
+          npm install -g eas-cli@latest
 
       - name: 📱 Setup EAS build cache
         uses: actions/cache@v3
@@ -115,17 +91,12 @@ jobs:
 
       - name: 📋 Fix package.json main entry
         run: |
-          # Check if jq is installed, if not install it
           if ! command -v jq &> /dev/null; then
-            echo "Installing jq..."
             sudo apt-get update && sudo apt-get install -y jq
           fi
 
-          # Fix the main entry in package.json
           if [ -f ./package.json ]; then
-            # Create a backup
             cp package.json package.json.bak
-            # Update the package.json
             jq '.main = "node_modules/expo/AppEntry.js"' package.json > package.json.tmp && mv package.json.tmp package.json
             echo "Updated package.json main entry"
             cat package.json | grep "main"
@@ -137,15 +108,12 @@ jobs:
       - name: 📋 Update metro.config.js for SVG support
         run: |
           if [ -f ./metro.config.js ]; then
-            echo "Creating backup of metro.config.js"
             cp ./metro.config.js ./metro.config.js.backup
-            echo "Updating metro.config.js to CommonJS format"
-            cat > ./metro.config.js << 'EOFMARKER'
+            cat > ./metro.config.js << 'EOF'
           /* eslint-disable @typescript-eslint/no-var-requires */
           const { getDefaultConfig } = require('expo/metro-config');
 
           const config = getDefaultConfig(__dirname);
-
           const { transformer, resolver } = config;
 
           config.transformer = {
@@ -160,16 +128,13 @@ jobs:
           };
 
           module.exports = config;
-          EOFMARKER
-            echo "metro.config.js updated to CommonJS format"
-          else
-            echo "metro.config.js not found"
+          EOF
+            echo "metro.config.js updated"
           fi
 
       - name: 📱 Build Development APK
         if: github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'dev' || github.event_name == 'push'
         run: |
-          # Build with increased memory limit
           export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
           eas build --platform android --profile development --local --non-interactive --output=./app-dev.apk
         env:
