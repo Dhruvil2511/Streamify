@@ -6,6 +6,9 @@ const servers = [
   { id: 1, label: "Server 1", url: "https://flicky.host/embed/" },
   { id: 2, label: "Server 2", url: "https://multiembed.mov/directstream.php?" },
   { id: 3, label: "Server 3", url: "https://vidsrc.xyz/embed/" },
+  { id: 4, label: "111Movies", url: "https://111movies.com/" },
+  { id: 5, label: "VidSrc", url: "https://vidsrc.cc/v2/embed/" },
+  { id: 6, label: "VidLink", url: "https://vidlink.pro/" },
 ];
 
 const ServerSelect = () => {
