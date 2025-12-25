@@ -39,6 +39,11 @@ const Player = () => {
           setEmbedString(`${server.url}video_id=${id}&tmdb=1`);
           break;
         case 3:
+        case 4:
+        case 5:
+          setEmbedString(`${server.url}movie/${id}`);
+          break;
+        case 6: // VidLink only accepts TMDB IDs
           setEmbedString(`${server.url}movie/${id}`);
           break;
         default:
@@ -52,15 +57,27 @@ const Player = () => {
           setEmbedString(`${server.url}tv/?id=${id}/${season}/${episode}`);
           break;
         case 2:
-          setEmbedString(`${server.url}video_id=${id}&tmdb=1&s=${season}&e=${episode}`);
+          setEmbedString(
+            `${server.url}video_id=${id}&tmdb=1&s=${season}&e=${episode}`
+          );
           break;
         case 3:
-          setEmbedString(`${server.url}tv?tmdb=${id}&season=${season}&episode=${episode}`);
+          setEmbedString(
+            `${server.url}tv?tmdb=${id}&season=${season}&episode=${episode}`
+          );
+          break;
+        case 4:
+        case 5:
+          setEmbedString(`${server.url}tv/${id}/${season}/${episode}`);
+          break;
+        case 6: // VidLink only accepts TMDB IDs
+          setEmbedString(`${server.url}tv/${id}/${season}/${episode}`);
           break;
         default:
-          setEmbedString(`${server.url}video_id=${id}&tmdb=1&s=${season}&e=${episode}`);
+          setEmbedString(
+            `${server.url}video_id=${id}&tmdb=1&s=${season}&e=${episode}`
+          );
           break;
-
       }
     }
     setIsLoading(false);
