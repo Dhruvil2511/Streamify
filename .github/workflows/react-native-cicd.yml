@@ -7,11 +7,10 @@ on:
     inputs:
       buildType:
         type: choice
-        description: "Build type to run"
+        description: "What to build"
         options:
           - dev
-          - prod-apk
-          - prod-aab
+          - prod
           - all
 
 env:
@@ -22,10 +21,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
@@ -37,41 +36,47 @@ jobs:
       - name: Install EAS CLI
         run: npm install -g eas-cli@latest
 
-      - name: Verify Expo auth
+      - name: Verify Expo authentication
         run: |
           if [ -z "$EXPO_TOKEN" ]; then
-            echo "EXPO_TOKEN missing"
+            echo "❌ EXPO_TOKEN missing"
             exit 1
           else
-            echo "EXPO_TOKEN OK"
+            echo "✅ EXPO_TOKEN present"
           fi
 
       - name: Expo doctor (non-blocking)
         run: npx expo-doctor || true
 
+      # ---------------- DEV APK ----------------
       - name: Build DEV APK
         if: github.event.inputs.buildType == 'dev' || github.event.inputs.buildType == 'all'
         run: |
           export NODE_OPTIONS="--max_old_space_size=4096"
-          EAS_NO_VCS=1 eas build --platform android --profile development --local --non-interactive --output=app-dev.apk
+          EAS_NO_VCS=1 eas build \
+            --platform android \
+            --profile development \
+            --local \
+            --non-interactive \
+            --output app-dev.apk
 
+      # ---------------- PROD APK ----------------
       - name: Build PROD APK
-        if: github.event.inputs.buildType == 'prod-apk' || github.event.inputs.buildType == 'all'
+        if: github.event.inputs.buildType == 'prod' || github.event.inputs.buildType == 'all'
         run: |
           export NODE_OPTIONS="--max_old_space_size=4096"
-          EAS_NO_VCS=1 eas build --platform android --profile production-apk --local --non-interactive --output=app-prod.apk
+          EAS_NO_VCS=1 eas build \
+            --platform android \
+            --profile production \
+            --local \
+            --non-interactive \
+            --output app-prod.apk
 
-      - name: Build PROD AAB
-        if: github.event.inputs.buildType == 'prod-aab' || github.event.inputs.buildType == 'all'
-        run: |
-          export NODE_OPTIONS="--max_old_space_size=4096"
-          EAS_NO_VCS=1 eas build --platform android --profile production --local --non-interactive --output=app-prod.aab
-
-      - name: Upload artifacts
+      - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: android-builds
+          name: android-apk-builds
           path: |
             app-dev.apk
             app-prod.apk
-            app-prod.aab
+          retention-days: 7
