@@ -39,16 +39,16 @@ jobs:
       - name: Verify Expo authentication
         run: |
           if [ -z "$EXPO_TOKEN" ]; then
-            echo "❌ EXPO_TOKEN missing"
+            echo "EXPO_TOKEN missing"
             exit 1
           else
-            echo "✅ EXPO_TOKEN present"
+            echo "EXPO_TOKEN OK"
           fi
 
       - name: Expo doctor (non-blocking)
         run: npx expo-doctor || true
 
-      # ---------------- DEV APK ----------------
+      # ---------- DEV APK ----------
       - name: Build DEV APK
         if: github.event.inputs.buildType == 'dev' || github.event.inputs.buildType == 'all'
         run: |
@@ -58,9 +58,10 @@ jobs:
             --profile development \
             --local \
             --non-interactive \
+            --clear-cache \
             --output app-dev.apk
 
-      # ---------------- PROD APK ----------------
+      # ---------- PROD APK ----------
       - name: Build PROD APK
         if: github.event.inputs.buildType == 'prod' || github.event.inputs.buildType == 'all'
         run: |
@@ -70,6 +71,7 @@ jobs:
             --profile production \
             --local \
             --non-interactive \
+            --clear-cache \
             --output app-prod.apk
 
       - name: Upload APK artifacts
