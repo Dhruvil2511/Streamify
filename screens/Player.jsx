@@ -1,3 +1,4 @@
+import { useKeepAwake } from "expo-keep-awake";
 import React, { useEffect, useState, useRef } from "react";
 import { useRoute } from "@react-navigation/native";
 import {
@@ -17,6 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { fallbackposter } from "../api/movieDb";
 
 const Player = () => {
+  useKeepAwake();
   const [isLoading, setIsLoading] = useState(true);
 
   const {
