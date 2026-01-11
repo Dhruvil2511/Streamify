@@ -84,7 +84,7 @@ const Search = () => {
   return (
     <SafeAreaView className="bg-neutral-950 flex-1">
       <View className="flex-row justify-center w-full items-center">
-        <View className="my-3 w-96  flex-row justify-between items-center border border-neutral-500 rounded-xl">
+        <View className="my-3 mx-4 flex-row justify-between items-center border border-neutral-500 rounded-xl">
           <TouchableOpacity
             className="rounded-xl p-3 m-1"
             style={{ backgroundColor: "rgba(19,108,170,1)" }}

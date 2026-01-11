@@ -23,6 +23,7 @@ web-build/
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+expo.log
 
 # macOS
 .DS_Store
